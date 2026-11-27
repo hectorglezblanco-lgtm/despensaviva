@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DespensaViva - Héctor y Estefa</title>
+  <meta name="application-name" content="DespensaViva" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DespensaViva" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#15533e" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --primary: #1b6b50;
+      --primary-light: #e6f4ef;
+      --accent: #e07a38;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 86px; line-height: 1.4; }
+    header {
+      background: linear-gradient(135deg, #15533e, #1b6b50);
+      color: white;
+      padding: 15px 16px 13px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .header-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    header h1 { font-size: 1.12rem; font-weight: 700; letter-spacing: -0.3px; }
+    header p { font-size: 0.74rem; opacity: 0.92; margin-top: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .header-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .badge-header { background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+    .sync-badge { background: rgba(22, 163, 74, 0.35); border: 1px solid rgba(255,255,255,0.35); padding: 2px 8px; border-radius: 20px; font-size: 0.67rem; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+    .sync-badge.offline { background: rgba(217, 119, 6, 0.45); }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 14px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title { font-size: 0.96rem; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .step-banner {
+      background: var(--primary-light);
+      border: 1px solid #bce3d4;
+      color: #134e3a;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.79rem;
+      margin-bottom: 12px;
+    }
+
+    .week-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #e2e8f0;
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+    .week-tab-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.15s;
+      color: #475569;
+    }
+    .week-tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .week-tab-btn strong { display: block; font-size: 0.85rem; }
+    .week-tab-btn span { display: block; font-size: 0.69rem; margin-top: 2px; opacity: 0.85; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 10px 14px; border-radius: 10px; border: none; font-weight: 600;
+      font-size: 0.85rem; cursor: pointer; transition: 0.15s; text-decoration: none;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: white; width: 100%; }
+    .btn-accent { background: var(--accent); color: white; width: 100%; }
+    .btn-ai { background: linear-gradient(135deg, #6d28d9, #7c3aed); color: white; }
+    .btn-alt { background: var(--purple-bg); color: var(--purple); border: 1px solid #ddd6fe; }
+    .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
+    .btn-sm { padding: 6px 9px; font-size: 0.75rem; border-radius: 8px; }
+    .btn-cooked { background: var(--primary-light); color: var(--primary); border: 1px solid #bce3d4; }
+    .btn-cooked.done { background: var(--green); color: white; border-color: var(--green); }
+    .btn-recipe { background: var(--blue-bg); color: var(--blue); border: 1px solid #bfdbfe; }
+    .btn-edit { background: #f8fafc; color: #334155; border: 1px solid var(--border); }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .upload-box-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 1.5px dashed var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .upload-box-btn.digital {
+      border-color: var(--blue);
+      background: var(--blue-bg);
+      color: var(--blue);
+    }
+    .upload-box-btn span.sub-lbl {
+      font-size: 0.69rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.71rem; font-weight: 700; }
+    .pill-red { background: var(--red-bg); color: var(--red); }
+    .pill-amber { background: var(--amber-bg); color: var(--amber); }
+    .pill-green { background: var(--green-bg); color: var(--green); }
+    .pill-blue { background: var(--blue-bg); color: var(--blue); }
+    .pill-purple { background: var(--purple-bg); color: var(--purple); }
+    .pill-gray { background: #f1f5f9; color: #475569; }
+
+    .diet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .diet-btn {
+      background: white; border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 10px; text-align: left; cursor: pointer; transition: 0.15s;
+    }
+    .diet-btn.active { border-color: var(--primary); background: var(--primary-light); }
+    .diet-btn strong { display: block; font-size: 0.83rem; color: var(--text); }
+    .diet-btn span { font-size: 0.71rem; color: var(--muted); }
+
+    .best-super-box {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1.5px solid #86efac;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .best-super-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 6px; flex-wrap: wrap; }
+    .best-super-name { font-size: 1.04rem; font-weight: 800; color: #14532d; }
+    .super-compare-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+    .rank-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--border); gap: 8px;
+    }
+    .rank-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .rank-left { display: flex; align-items: center; gap: 10px; }
+    .rank-medal { font-size: 1.25rem; min-width: 26px; text-align: center; }
+    .rank-bar-wrap { width: 100%; height: 6px; background: #e2e8f0; border-radius: 999px; margin-top: 4px; overflow: hidden; }
+    .rank-bar-fill { height: 100%; background: var(--primary); border-radius: 999px; }
+
+    .shop-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 6px; border-bottom: 1px solid var(--border); gap: 8px;
+      border-radius: 8px; transition: background 0.15s;
+    }
+    .shop-item:last-child { border-bottom: none; }
+    .shop-item.checked-row {
+      background: #f8fafc;
+      opacity: 0.72;
+    }
+    .shop-item.checked-row .shop-name {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .shop-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; cursor: pointer; }
+    .shop-left input[type="checkbox"] {
+      width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0;
+    }
+    .shop-name { font-size: 0.88rem; font-weight: 600; }
+    .shop-sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+    .day-header { font-size: 0.82rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 0 6px; display:flex; justify-content:space-between; align-items:center; }
+    .meal-row { padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .meal-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .meal-type { font-size: 0.71rem; font-weight: 700; color: var(--muted); text-transform: uppercase; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .meal-title { font-size: 0.93rem; font-weight: 700; margin: 3px 0; }
+    .meal-tip { font-size: 0.76rem; color: #475569; margin-bottom: 6px; }
+    .meal-ings-pills { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+    .meal-actions { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .meal-btn-group { display:flex; gap:5px; flex-wrap:wrap; }
+
+    .inv-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--border); gap: 8px;
+    }
+    .inv-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .inv-info h4 { font-size: 0.9rem; font-weight: 600; }
+    .inv-meta { font-size: 0.75rem; color: var(--muted); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .qty-controls { display: flex; align-items: center; gap: 5px; }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border);
+      background: #f8fafc; font-weight: 700; font-size: 1rem; cursor: pointer;
+    }
+    .qty-val { font-size: 0.82rem; font-weight: 700; min-width: 56px; text-align: center; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 6px; margin-bottom: 6px; align-items:center; }
+    input, select, textarea {
+      width: 100%; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--border);
+      font-size: 0.85rem; background: #f8fafc; color: var(--text);
+    }
+    textarea { resize: vertical; min-height: 75px; }
+
+    .ratio-bar { height: 12px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 8px 0; display: flex; }
+    .ratio-plan { background: var(--green); height: 100%; }
+    .ratio-extra { background: var(--red); height: 100%; }
+
+    nav.bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: white;
+      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr);
+      padding: 6px 4px 10px; z-index: 30; box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+    }
+    .nav-btn {
+      background: none; border: none; display: flex; flex-direction: column; align-items: center;
+      gap: 3px; font-size: 0.69rem; font-weight: 600; color: var(--muted); cursor: pointer; padding: 4px;
+    }
+    .nav-btn.active { color: var(--primary); }
+    .nav-icon { font-size: 1.22rem; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.58);
+      z-index: 60; display: none; align-items: flex-end; justify-content: center;
+      padding: 12px;
+    }
+    .modal-backdrop.open { display: flex; animation: fadeIn 0.18s ease; }
+    .modal-sheet {
+      background: white; width: 100%; max-width: 640px; max-height: 88vh;
+      overflow-y: auto; border-radius: 18px; padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 10px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .modal-close {
+      background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%;
+      font-size: 1.1rem; font-weight: 700; cursor: pointer; color: #334155; flex-shrink: 0;
+    }
+    .recipe-steps { padding-left: 18px; margin: 10px 0; font-size: 0.85rem; color: #334155; }
+    .recipe-steps li { margin-bottom: 6px; }
+    .ing-edit-box {
+      background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px; margin-bottom: 10px;
+    }
+    .ing-chip-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: white; border: 1px solid var(--border); padding: 6px 10px;
+      border-radius: 8px; margin-bottom: 6px; font-size: 0.82rem;
+    }
+
+    .recalc-banner {
+      background: var(--purple-bg);
+      border: 1.5px solid #c4b5fd;
+      color: #4c1d95;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      margin-bottom: 12px;
+    }
+
+    .toast {
+      position: fixed; top: 72px; left: 50%; transform: translateX(-50%);
+      background: #1e293b; color: white; padding: 10px 16px; border-radius: 999px;
+      font-size: 0.81rem; font-weight: 600; z-index: 80; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 92%; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <h1>🥗 DespensaViva · Héctor y Estefa</h1>
+      <p>Esta semana · Próxima semana · Compra sábado</p>
+    </div>
+    <div class="header-badges">
+      <span class="badge-header" id="header-goal-badge">Bajar de peso</span>
+      <span class="sync-badge" id="sync-status-badge" onclick="forceManualSync()" title="Pulsa para sincronizar ahora">🟢 En vivo</span>
+    </div>
+  </div>
+</header>
+
+<div id="toast" class="toast"></div>
+
+<div class="container">
+
+  <!-- TAB 1: MENÚS (ESTA SEMANA / PRÓXIMA SEMANA) Y LISTA DEL SÁBADO -->
+  <section id="tab-plan" class="tab-content active">
+
+    <!-- SELECTOR DE SEMANA -->
+    <div class="week-switcher">
+      <button type="button" class="week-tab-btn active" id="btn-week-current" onclick="setActiveWeekView('current')">
+        <strong>🍳 Esta semana</strong>
+        <span>Cocinando y consumiendo</span>
+      </button>
+      <button type="button" class="week-tab-btn" id="btn-week-next" onclick="setActiveWeekView('next')">
+        <strong>🗓️ Próxima semana</strong>
+        <span>Menú previsto · Compra sábado</span>
+      </button>
+    </div>
+
+    <div id="week-context-banner" class="step-banner"></div>
+
+    <div id="recalc-summary-banner" class="recalc-banner" style="display:none;"></div>
+
+    <!-- BLOQUE DE LISTA DE COMPRA (SIEMPRE CALCULADA PARA PRÓXIMA SEMANA / SÁBADO) -->
+    <div id="saturday-shopping-section">
+      <div class="best-super-box" id="recommended-super-box">
+        <div class="best-super-header">
+          <span style="font-size:0.74rem; font-weight:800; text-transform:uppercase; color:#166534;">🏆 Súper recomendado para el sábado</span>
+          <span class="pill pill-green" id="best-super-total">0,00 €</span>
+        </div>
+        <div class="best-super-name" id="best-super-name">Calculando...</div>
+        <p style="font-size:0.75rem; color:#14532d; margin-top:2px;" id="best-super-desc"></p>
+        <div class="super-compare-pills" id="super-totals-compare"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>🛒 Lista de la compra (Para Próxima Semana)</span>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="pill pill-blue" id="shop-items-count">0 pendientes</span>
+            <button class="btn btn-sm btn-outline" id="clear-checked-btn" style="display:none;" onclick="clearCheckedList()">Limpiar carro</button>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border);">
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.79rem; color:var(--text); cursor:pointer;">
+            <input type="checkbox" id="include-habituals-toggle" checked onchange="renderPlanAndShopping()" style="width:16px; height:16px; accent-color:var(--primary);" />
+            <span>Incluir reposición de <strong>consumos medios semanales</strong> (leche, café...)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.79rem; color:var(--text); cursor:pointer;">
+            <input type="checkbox" id="deduct-pantry-toggle" checked onchange="renderPlanAndShopping()" style="width:16px; height:16px; accent-color:var(--primary);" />
+            <span>Descontar sobrantes libres de <strong>En Casa</strong> (reservando lo de esta semana)</span>
+          </label>
+        </div>
+
+        <div id="shopping-list-container"></div>
+      </div>
+    </div>
+
+    <!-- OBJETIVO Y ACCIONES DE SEMANA -->
+    <div class="card">
+      <div class="card-title">
+        <span>🎯 Estilo del menú (2 personas)</span>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn btn-sm btn-outline" id="btn-rollover-week" onclick="promoteNextWeekToCurrent()" style="border-color:var(--primary); color:var(--primary);">⏭️ Pasar Próxima → Esta semana</button>
+          <button class="btn btn-sm btn-outline" onclick="regenerateViewedWeek()">🔄 Renovar semana</button>
+        </div>
+      </div>
+      <div class="diet-grid">
+        <div class="diet-btn active" data-goal="weightloss" onclick="setGoal('weightloss', this)">
+          <strong>🥗 Bajar de peso</strong>
+          <span>Ligero, saciante (2 raciones)</span>
+        </div>
+        <div class="diet-btn" data-goal="protein" onclick="setGoal('protein', this)">
+          <strong>💪 Rico en Proteínas</strong>
+          <span>Raciones altas (2 personas)</span>
+        </div>
+        <div class="diet-btn" data-goal="balanced" onclick="setGoal('balanced', this)">
+          <strong>⚖️ Casero Equilibrado</strong>
+          <span>Cuchara y platos tradicionales</span>
+        </div>
+        <div class="diet-btn" data-goal="quick" onclick="setGoal('quick', this)">
+          <strong>⚡ Rápido (&lt; 20 min)</strong>
+          <span>Plancha, vapor y ensaladas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTADO DE DÍAS DE LA SEMANA ACTIVA EN PANTALLA -->
+    <div class="card" style="background:transparent; border:none; padding:0; box-shadow:none;">
+      <div class="card-title" style="padding:0 2px;">
+        <span id="menu-section-heading">🍽️ Menú de Esta Semana (Lunes a Domingo)</span>
+        <span class="pill pill-green" id="menu-week-badge">En curso</span>
+      </div>
+      <div id="menu-list"></div>
+    </div>
+  </section>
+
+  <!-- TAB 2: SUBIR TIQUET Y AÑADIR COMERCIO -->
+  <section id="tab-tiquet" class="tab-content">
+    <div class="step-banner">
+      <strong>🧾 Compra del sábado → Recálculo automático:</strong> Sube la foto del tiquet o el PDF de Mercadona. Al guardarlo, sumará los productos a <strong>En Casa</strong> y <strong>recalculará el menú de Próxima Semana</strong> adaptándolo a lo que realmente habéis comprado.
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧾 1. Subir tiquet (Foto o Archivo Digital PDF)</div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:0.76rem; font-weight:700; display:block; margin-bottom:4px; color:var(--muted);">Selecciona el comercio:</label>
+        <select id="ticket-super-select"></select>
+      </div>
+
+      <div class="upload-grid">
+        <label class="upload-box-btn" for="ticket-photo">
+          <span style="font-size:1.3rem;">📷</span>
+          <span>Foto tiquet papel</span>
+          <span class="sub-lbl">Abrir cámara del móvil</span>
+        </label>
+        <input type="file" accept="image/*" capture="environment" id="ticket-photo" style="display:none;" onchange="handleTicketFileUpload(this, 'camera')" />
+
+        <label class="upload-box-btn digital" for="ticket-digital-file">
+          <span style="font-size:1.3rem;">📄</span>
+          <span>Adjuntar tiquet digital</span>
+          <span class="sub-lbl">PDF Mercadona / Galería</span>
+        </label>
+        <input type="file" accept=".pdf,application/pdf,image/*,text/plain" id="ticket-digital-file" style="display:none;" onchange="handleTicketFileUpload(this, 'digital')" />
+      </div>
+
+      <div id="ticket-upload-status" style="display:none; font-size:0.78rem; padding:8px 10px; border-radius:9px; background:#f8fafc; border:1px solid var(--border); margin-bottom:8px;"></div>
+
+      <button class="btn btn-accent" onclick="loadSampleTicket()">✨ Probar con Tiquet de Ejemplo (Sábado)</button>
+    </div>
+
+    <div id="ticket-analysis-card" class="card" style="display:none;">
+      <div class="card-title">
+        <span>📊 Comparativa: Lista Próxima Semana vs. Tiquet</span>
+        <span class="pill pill-blue" id="ticket-total-paid">0,00 €</span>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700;">
+          <span style="color:var(--green);">✅ De la lista: <span id="ratio-plan-pct">0%</span> (<span id="plan-euros">0€</span>)</span>
+          <span style="color:var(--red);">🍫 Extra / Sustitución: <span id="ratio-extra-pct">0%</span> (<span id="extra-euros">0€</span>)</span>
+        </div>
+        <div class="ratio-bar">
+          <div class="ratio-plan" id="bar-plan" style="width:75%"></div>
+          <div class="ratio-extra" id="bar-extra" style="width:25%"></div>
+        </div>
+        <p id="audit-verdict" style="font-size:0.78rem; color:var(--muted);"></p>
+      </div>
+
+      <div id="ticket-items-preview"></div>
+      <button class="btn btn-primary" id="btn-commit-ticket" style="margin-top:10px;" onclick="commitTicketToInventory()">📥 Guardar en Casa y Recalcular Próxima Semana</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏪 2. Añadir Supermercado, Carnicería o Pescadería</div>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom:8px;">
+        Da de alta cualquier comercio donde compréis habitualmente para seleccionarlo arriba al subir el tiquet:
+      </p>
+      <div class="form-row">
+        <input type="text" id="new-store-name" placeholder="Ej. Carnicería Plaza, Gadis..." />
+        <select id="new-store-type">
+          <option value="Supermercado">🛒 Supermercado</option>
+          <option value="Carnicería">🥩 Carnicería</option>
+          <option value="Pescadería">🐟 Pescadería</option>
+          <option value="Frutería">🥬 Frutería / Mercado</option>
+        </select>
+      </div>
+      <button class="btn btn-outline" style="width:100%; border-color:var(--primary); color:var(--primary);" onclick="addNewStore()">➕ Guardar nuevo comercio</button>
+      <div id="registered-stores-pills" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;"></div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--purple);">
+      <div class="card-title">✨ 3. Conexión Directa con Gemini IA (Recetas + Tiquets PDF/Foto)</div>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom:8px;">
+        Pega tu clave gratuita de Google AI Studio (<strong>aistudio.google.com</strong>). Sirve para alternativas inteligentes, desglosar platos nuevos y <strong>leer los PDF de Mercadona</strong>:
+      </p>
+      <input type="password" id="api-key-input" placeholder="AQ.... o AIzaSy..." onchange="saveApiKey()" style="margin-bottom:8px;" />
+
+      <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px; color:var(--muted);">Modelo de Gemini:</label>
+      <select id="gemini-model-select" onchange="saveGeminiModelPref()" style="margin-bottom:6px;">
+        <option value="auto">🚀 Automático (Prueba Gemini 3 y 2.5 más recientes)</option>
+        <option value="gemini-3-flash-preview">gemini-3-flash-preview (Serie 3 rápido)</option>
+        <option value="gemini-2.5-flash">gemini-2.5-flash (Estándar rápido)</option>
+        <option value="gemini-2.5-pro">gemini-2.5-pro (Razonamiento avanzado)</option>
+        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (Ligero / mayor cuota)</option>
+        <option value="custom">✏️ Otro ID personalizado...</option>
+      </select>
+      <input type="text" id="gemini-custom-model-input" placeholder="Escribe el ID exacto del modelo (ej. gemini-3-pro-preview)" onchange="saveGeminiModelPref()" style="display:none;" />
+    </div>
+  </section>
+
+  <!-- TAB 3: PRECIOS SÚPER Y RANKING GENERAL -->
+  <section id="tab-precios" class="tab-content">
+    <div class="card">
+      <div class="card-title">
+        <span>🏆 Ranking General de Comercios</span>
+        <span class="pill pill-green" id="total-tickets-badge">0 tiquets</span>
+      </div>
+      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:8px;">
+        Clasificación global según vuestras compras acumuladas y en cuántos productos lidera cada tienda como la más barata:
+      </p>
+      <div id="general-store-ranking"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🔍 Buscador de Precios por Producto</span>
+        <span class="pill pill-gray" id="db-count-badge">0 productos</span>
+      </div>
+      <input type="text" id="price-search-input" placeholder="Buscar (ej. leche, pollo, zanahoria, cebolla...)" oninput="renderPriceDatabase()" style="margin-bottom:10px;" />
+      <div id="price-ranking-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">➕ Registrar precio manual</div>
+      <div class="form-row">
+        <input type="text" id="hist-prod" placeholder="Producto (ej. Zanahorias 1kg)" />
+        <select id="hist-store"></select>
+      </div>
+      <div class="form-row">
+        <input type="number" step="0.01" id="hist-price" placeholder="Precio € (ej. 0.99)" />
+        <button class="btn btn-primary" onclick="addManualPrice()">Guardar Precio</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: EN CASA + CONSUMOS MEDIOS SEMANALES -->
+  <section id="tab-inventario" class="tab-content">
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="card-title">
+        <span>🔄 Consumos Medios Semanales (Piloto Automático)</span>
+        <button class="btn btn-sm btn-accent" onclick="simulateWeekConsumption()">⏩ Simular paso de 1 semana</button>
+      </div>
+      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:10px;">
+        Configura lo que gastáis de media cada semana en desayunos, meriendas o básicos. La app los descuenta sola de vuestra despensa cada semana y <strong>os salta la alerta en la lista del sábado</strong> cuando falten.
+      </p>
+
+      <div class="form-row">
+        <input type="text" id="hab-name" placeholder="Ej. Leche semi, Café, Zumo..." />
+        <input type="number" step="0.5" id="hab-weekly" placeholder="Gasto/semana (ej. 4)" />
+      </div>
+      <div class="form-row">
+        <select id="hab-unit">
+          <option value="L">litros (L)</option>
+          <option value="g">gramos (g)</option>
+          <option value="uds">unidades / paquetes</option>
+        </select>
+        <button class="btn btn-primary" onclick="addHabitualItem()">➕ Añadir consumo fijo</button>
+      </div>
+
+      <div id="habituals-list" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>➕ Meter producto a mano en casa (sin tiquet)</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom:8px;">
+        Si perdiste el tiquet o ya tenías algo en el armario, apúntalo aquí sin necesidad de poner precio:
+      </p>
+      <div class="form-row">
+        <input type="text" id="man-inv-name" placeholder="Producto (ej. Cebolla, Zanahoria...)" />
+        <input type="number" step="0.5" id="man-inv-qty" placeholder="Cantidad (ej. 500)" />
+      </div>
+      <div class="form-row">
+        <select id="man-inv-unit">
+          <option value="g">gramos (g)</option>
+          <option value="uds">unidades (uds)</option>
+          <option value="L">litros (L)</option>
+        </select>
+        <button class="btn btn-primary" onclick="addManualInventory()">Guardar en Casa</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🧊 Stock vivo actual en casa</span>
+        <button class="btn btn-sm btn-outline" onclick="resetDemo()">Restaurar todo (v3)</button>
+      </div>
+      <div id="inventory-list"></div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- MODAL 1: VER RECETA -->
+<div id="recipe-modal" class="modal-backdrop" onclick="if(event.target===this) closeModal('recipe-modal')">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <div>
+        <span class="pill pill-green" id="rec-modal-tag">Receta 2 pers.</span>
+        <h3 id="rec-modal-title" style="font-size:1.05rem; margin-top:4px;">Título</h3>
+        <p id="rec-modal-tip" style="font-size:0.78rem; color:var(--muted); margin-top:2px;"></p>
+      </div>
+      <button class="modal-close" onclick="closeModal('recipe-modal')">✕</button>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <strong style="font-size:0.84rem; color:var(--primary);">🥕 Ingredientes exactos (para 2 personas):</strong>
+      <div id="rec-modal-ings" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;"></div>
+    </div>
+
+    <div>
+      <strong style="font-size:0.84rem; color:var(--primary);">👨‍🍳 Preparación paso a paso:</strong>
+      <ol id="rec-modal-steps" class="recipe-steps"></ol>
+    </div>
+
+    <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+      <a id="rec-modal-google-link" href="#" target="_blank" rel="noopener" class="btn btn-outline" style="flex:1; border-color:var(--blue); color:var(--blue);">
+        🔎 Ver en Google
+      </a>
+      <button id="rec-modal-alt-btn" class="btn btn-alt" style="flex:1;">
+        🎲 Otra alternativa
+      </button>
+      <button id="rec-modal-edit-btn" class="btn btn-primary" style="flex:1;">
+        ✏️ Editar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: EDITAR PLATO / CAMBIAR COMIDA -->
+<div id="edit-meal-modal" class="modal-backdrop" onclick="if(event.target===this) closeModal('edit-meal-modal')">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <div>
+        <span class="pill pill-amber" id="edit-modal-day-label">Lunes · Comida</span>
+        <h3 style="font-size:1.02rem; margin-top:4px;">✏️ Editar o cambiar plato</h3>
+        <p style="font-size:0.75rem; color:var(--muted);">Escribe el plato que queréis comer y pulsa el botón morado para que <strong>Gemini</strong> rellene los ingredientes y la receta automáticamente.</p>
+      </div>
+      <button class="modal-close" onclick="closeModal('edit-meal-modal')">✕</button>
+    </div>
+
+    <div style="margin-bottom:8px;">
+      <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Nombre del plato (2 personas):</label>
+      <input type="text" id="edit-meal-title" placeholder="Ej. Lentejas estofadas con verduras (2 pers.)" />
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <button type="button" id="btn-ai-autofill" class="btn btn-ai" style="width:100%;" onclick="generateRecipeWithGemini()">
+        ✨ Rellenar ingredientes y receta con Gemini IA
+      </button>
+      <div id="ai-recipe-error-box" style="display:none; margin-top:8px; padding:10px; border-radius:10px; background:var(--red-bg); border:1px solid #fecaca; color:#991b1b; font-size:0.78rem; word-break:break-word;"></div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Etiqueta / tiempo:</label>
+        <input type="text" id="edit-meal-tag" placeholder="Ej. 25 min / Casero" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Nota rápida:</label>
+        <input type="text" id="edit-meal-tip" placeholder="Ej. 2 raciones completas" />
+      </div>
+    </div>
+
+    <div class="ing-edit-box">
+      <strong style="font-size:0.82rem; display:block; margin-bottom:6px;">🥕 Ingredientes del plato:</strong>
+      <div id="edit-ings-list"></div>
+
+      <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">
+        <span style="font-size:0.74rem; font-weight:700; color:var(--muted); display:block; margin-bottom:4px;">+ Añadir o ajustar ingrediente a mano:</span>
+        <div class="form-row-3">
+          <input type="text" id="new-meal-ing-name" list="known-products-datalist" placeholder="Ej. Zanahoria" />
+          <input type="number" step="0.5" id="new-meal-ing-qty" placeholder="Cant." />
+          <select id="new-meal-ing-unit">
+            <option value="g">g</option>
+            <option value="uds">uds</option>
+            <option value="L">L</option>
+          </select>
+          <button type="button" class="btn btn-sm btn-primary" style="width:auto;" onclick="addIngredientToEditor()">+</button>
+        </div>
+        <datalist id="known-products-datalist"></datalist>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Pasos de la receta (1 paso por línea):</label>
+      <textarea id="edit-meal-steps" placeholder="1. Picar la cebolla, zanahoria y puerro...&#10;2. Sofreír 5 minutos y añadir los garbanzos..."></textarea>
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button type="button" class="btn btn-outline" style="flex:1;" onclick="saveEditedMeal(false)">💾 Guardar cambios</button>
+      <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveEditedMeal(true)">🍳 Guardar y Cocinado</button>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchTab('plan', this)">
+    <span class="nav-icon">📋</span>
+    <span>Menú y Lista</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('tiquet', this)">
+    <span class="nav-icon">🧾</span>
+    <span>Subir Tiquet</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('precios', this)">
+    <span class="nav-icon">🏆</span>
+    <span>Precios Súper</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('inventario', this)">
+    <span class="nav-icon">🧊</span>
+    <span>En Casa</span>
+  </button>
+</nav>
+
+<script>
+  const FIREBASE_DB_URL = "https://despensaviva-4486b-default-rtdb.europe-west1.firebasedatabase.app/hogar_hector_estefa.json";
+  const MENU_SCHEMA_VERSION = 3;
+  let lastCloudFingerprint = "";
+  let isSyncing = false;
+
+  const INITIAL_STORES = [
+    { name: "Gadis", type: "Supermercado", icon: "🛒", ticketsCount: 4, totalSpent: 168.40 },
+    { name: "Mercadona", type: "Supermercado", icon: "🛒", ticketsCount: 3, totalSpent: 134.20 },
+    { name: "Lidl", type: "Supermercado", icon: "🛒", ticketsCount: 2, totalSpent: 76.50 },
+    { name: "Carnicería Barrio", type: "Carnicería", icon: "🥩", ticketsCount: 2, totalSpent: 48.90 },
+    { name: "Pescadería Mercado", type: "Pescadería", icon: "🐟", ticketsCount: 2, totalSpent: 42.30 }
+  ];
+
+  const INITIAL_INVENTORY = [
+    { id: 1, name: "Garbanzo pedrosillano", qty: 500, unit: "g", store: "Gadis" },
+    { id: 2, name: "Huevos camperos", qty: 6, unit: "uds", store: "Lidl" },
+    { id: 3, name: "Leche semidesnatada", qty: 1.5, unit: "L", store: "Gadis" },
+    { id: 4, name: "Café molido / cápsulas", qty: 100, unit: "g", store: "Mercadona" }
+  ];
+
+  const INITIAL_HABITUALS = [
+    { id: 101, name: "Leche semidesnatada", weeklyUse: 4, unit: "L", dbKey: "Leche semidesnatada (1L)" },
+    { id: 102, name: "Café molido / cápsulas", weeklyUse: 250, unit: "g", dbKey: "Café molido natural (250g)" },
+    { id: 103, name: "Zumo de naranja natural", weeklyUse: 2, unit: "L", dbKey: "Zumo naranja 1L" },
+    { id: 104, name: "Pan integral / tostadas", weeklyUse: 2, unit: "uds", dbKey: "Pan molde integral" }
+  ];
+
+  const INITIAL_PRICE_DB = [
+    { product: "Leche semidesnatada (1L)", prices: { "Lidl": 0.89, "Mercadona": 0.92, "Gadis": 0.95 } },
+    { product: "Café molido natural (250g)", prices: { "Lidl": 2.35, "Gadis": 2.55, "Mercadona": 2.60 } },
+    { product: "Zumo naranja 1L", prices: { "Lidl": 1.29, "Mercadona": 1.35, "Gadis": 1.45 } },
+    { product: "Pan molde integral", prices: { "Lidl": 1.15, "Mercadona": 1.25, "Gadis": 1.35 } },
+    { product: "Pechuga de pollo (kg)", prices: { "Carnicería Barrio": 6.50, "Lidl": 6.79, "Gadis": 7.10, "Mercadona": 7.25 } },
+    { product: "Merluza fresca (kg)", prices: { "Pescadería Mercado": 8.95, "Lidl": 9.45, "Gadis": 9.90, "Mercadona": 10.50 } },
+    { product: "Salmón fresco (kg)", prices: { "Pescadería Mercado": 12.90, "Lidl": 13.50, "Gadis": 13.95, "Mercadona": 14.20 } },
+    { product: "Atún / bonito fresco (kg)", prices: { "Pescadería Mercado": 11.50, "Gadis": 12.20, "Mercadona": 12.80 } },
+    { product: "Brócoli fresco (kg)", prices: { "Lidl": 1.89, "Gadis": 2.15, "Mercadona": 2.25 } },
+    { product: "Calabacín verde (kg)", prices: { "Lidl": 1.49, "Gadis": 1.69, "Mercadona": 1.79 } },
+    { product: "Zanahorias (bolsa 1kg)", prices: { "Lidl": 0.89, "Mercadona": 0.95, "Gadis": 0.99 } },
+    { product: "Cebolla dulce / blanca (kg)", prices: { "Lidl": 1.25, "Gadis": 1.35, "Mercadona": 1.45 } },
+    { product: "Puerro fresco (bandeja)", prices: { "Lidl": 1.59, "Gadis": 1.75, "Mercadona": 1.85 } },
+    { product: "Pimiento rojo y verde (kg)", prices: { "Lidl": 2.19, "Gadis": 2.40, "Mercadona": 2.55 } },
+    { product: "Espinacas frescas (bolsa 300g)", prices: { "Lidl": 1.15, "Mercadona": 1.25, "Gadis": 1.35 } },
+    { product: "Judías verdes (kg)", prices: { "Lidl": 2.49, "Gadis": 2.75, "Mercadona": 2.89 } },
+    { product: "Champiñones laminados (bandeja)", prices: { "Lidl": 1.29, "Mercadona": 1.35, "Gadis": 1.45 } },
+    { product: "Patatas para guisar (kg)", prices: { "Lidl": 1.19, "Gadis": 1.29, "Mercadona": 1.39 } },
+    { product: "Gambón cocido (caja)", prices: { "Mercadona": 5.95, "Lidl": 6.20, "Gadis": 6.50 } },
+    { product: "Yogur natural sin azúcar (pack)", prices: { "Lidl": 1.35, "Mercadona": 1.50, "Gadis": 1.55 } },
+    { product: "Huevos camperos (docena)", prices: { "Lidl": 2.15, "Mercadona": 2.40, "Gadis": 2.45 } },
+    { product: "Garbanzo pedrosillano (1 kg)", prices: { "Lidl": 2.75, "Gadis": 2.85, "Mercadona": 2.95 } },
+    { product: "Lenteja pardina (1 kg)", prices: { "Lidl": 1.89, "Gadis": 1.99, "Mercadona": 2.10 } },
+    { product: "Tomate ensalada (kg)", prices: { "Lidl": 1.89, "Gadis": 2.10, "Mercadona": 2.25 } },
+    { product: "Lechuga / brotes tiernos", prices: { "Lidl": 0.99, "Mercadona": 1.15, "Gadis": 1.20 } },
+    { product: "Conejo troceado (kg)", prices: { "Carnicería Barrio": 8.40, "Gadis": 8.90, "Lidl": 9.20, "Mercadona": 9.60 } },
+    { product: "Carrilleras de cerdo (kg)", prices: { "Carnicería Barrio": 7.95, "Lidl": 8.20, "Gadis": 8.40, "Mercadona": 8.95 } }
+  ];
+
+  const RECIPE_BOOK = {
+    "Pechuga de pollo plancha + brócoli vapor (2 pers.)": [
+      "Corta 350 g de brócoli en ramilletes pequeños y cuécelo al vapor 5 minutos para que quede al dente.",
+      "Salpimienta los 350 g de pechuga de pollo y añade ajo en polvo y unas gotas de limón.",
+      "Marca el pollo en la plancha caliente con unas gotas de AOVE 3-4 minutos por lado y sirve con el brócoli."
+    ],
+    "Crema de calabacín con huevo duro (2 pers.)": [
+      "Cuece los 2 huevos camperos en agua hirviendo 10 minutos, enfría y pélalos.",
+      "Trocea 400 g de calabacín y 1 puerro (100 g); cuécelos 15 minutos en poca agua con sal y AOVE.",
+      "Tritura fino y sirve con el huevo duro picado por encima."
+    ],
+    "Merluza al horno con tomate asado (2 pers.)": [
+      "Precalienta el horno a 190 °C. Corta 300 g de tomate en rodajas gruesas con sal, orégano y un hilo de AOVE.",
+      "Hornea los tomates 10 minutos, coloca encima 400 g de merluza salpimentada y hornea 10-12 minutos más."
+    ],
+    "Salteado de gambones con calabacín (2 pers.)": [
+      "Pela 250 g de gambones y corta 300 g de calabacín en medias lunas y 1 diente de ajo.",
+      "Saltea el calabacín y el ajo a fuego vivo 5 minutos, añade los gambones 1-2 minutos y sirve."
+    ],
+    "Potaje ligero de garbanzos con zanahoria, puerro y espinacas (2 pers.)": [
+      "Pon 200 g de garbanzo pedrosillano a remojo 12 horas.",
+      "Cuécelos en olla rápida 22 minutos con 150 g de zanahoria, 100 g de puerro, 100 g de cebolla, laurel y pimentón.",
+      "Abre la olla, añade 150 g de espinacas frescas y hierve 3 minutos más."
+    ],
+    "Tortilla francesa de 2 huevos + ensalada (2 pers.)": [
+      "Bate 4 huevos camperos (2 por persona) con una pizca de sal y cuaja dos tortillas jugosas.",
+      "Acompaña con ensalada de 200 g de tomate, 100 g de lechuga y 60 g de cebolla aliñada."
+    ],
+    "Conejo guisado al ajillo con pimientos (2 pers.)": [
+      "Dora 500 g de conejo troceado en cazuela con AOVE y 3 ajos enteros.",
+      "Añade 200 g de pimiento y 100 g de cebolla, rehoga 5 min, moja con vino blanco y agua y guisa 25-30 min."
+    ],
+    "Ensalada completa con pollo (2 pers.)": [
+      "Marca 250 g de pechuga de pollo en tiras a la plancha.",
+      "Mezcla 150 g de lechuga, 200 g de tomate y 80 g de cebolla, corona con el pollo y aliña."
+    ],
+    "Merluza a la plancha con brócoli (2 pers.)": [
+      "Cuece 350 g de brócoli al vapor 5 minutos.",
+      "Marca 400 g de merluza fresca en plancha caliente 3 minutos por cada lado y sirve con limón."
+    ],
+    "Revuelto de gambones y calabacín (2 pers.)": [
+      "Pocha 250 g de calabacín en dados 5 minutos, añade 250 g de gambones pelados 1 minuto.",
+      "Casca 3 huevos batidos, cuaja suave fuera del fuego y sirve."
+    ],
+    "Pechuga de pollo especiada al horno con zanahoria (2 pers.)": [
+      "Hornea a 200 °C durante 22 minutos 400 g de pollo adobado con pimentón y orégano junto a 200 g de zanahoria y 100 g de cebolla."
+    ],
+    "Yogur natural + tortilla ligera (2 pers.)": [
+      "Prepara dos tortillas francesas de 2 huevos cada una y acompaña de postre con 1 yogur natural por persona."
+    ],
+    "Conejo al horno con verduras asadas (2 pers.)": [
+      "Hornea a 195 °C durante 35-40 min 550 g de conejo sobre cama de 200 g de pimiento, 200 g de calabacín y 150 g de cebolla."
+    ],
+    "Ensalada de tomate con huevo cocido (2 pers.)": [
+      "Cuece 2 huevos 10 min, trocea 350 g de tomate y 80 g de cebolla, mezcla y aliña con AOVE."
+    ],
+    "Carrilleras estofadas en su jugo (2 pers.)": [
+      "Sella 600 g de carrilleras, pocha 150 g de cebolla y 150 g de zanahoria, cubre con vino tinto y caldo y guisa 35-40 min en olla rápida."
+    ],
+    "Salmón a la plancha con judías verdes y zanahoria (2 pers.)": [
+      "Cuece 250 g de judías verdes y 150 g de zanahoria en bastones al vapor 8 minutos.",
+      "Marca 360 g de lomos de salmón fresco en plancha caliente 3 minutos por el lado de la piel y 2 por el otro."
+    ],
+    "Lentejas estofadas con zanahoria, puerro y pimiento (2 pers.)": [
+      "Pon en la olla rápida 200 g de lenteja pardina lavada, 150 g de zanahoria, 100 g de puerro, 100 g de pimiento, 100 g de cebolla, laurel y pimentón.",
+      "Cubre con agua fría y cocina 12 minutos desde que suba la válvula."
+    ],
+    "Revuelto de champiñones con gambones (2 pers.)": [
+      "Saltea 250 g de champiñones laminados a fuego fuerte hasta que pierdan su agua.",
+      "Añade 200 g de gambones pelados 1 minuto y cuaja con 3 huevos camperos batidos."
+    ],
+    "Atún a la plancha vuelta y vuelta con tomate aliñado (2 pers.)": [
+      "Corta 300 g de tomate en gajos y 80 g de cebolla fina; aliña con AOVE y orégano.",
+      "Marca 360 g de filetes de atún fresco 1 minuto por cada lado en sartén muy caliente."
+    ],
+    "Pollo salteado con champiñones y calabacín (2 pers.)": [
+      "Saltea 350 g de pechuga de pollo en dados a fuego vivo 4 minutos y reserva.",
+      "En la misma sartén saltea 200 g de champiñones y 250 g de calabacín 5 minutos, junta todo y sirve."
+    ],
+    "Judías verdes salteadas con huevo escalfado (2 pers.)": [
+      "Cuece 350 g de judías verdes 8 minutos y saltéalas con 100 g de cebolla pochada.",
+      "Corona cada plato con 2 huevos camperos escalfados o a la plancha (4 huevos en total)."
+    ]
+  };
+
+  // Banco ampliado de alternativas rápidas (1 clic) por objetivo
+  const ALTERNATIVE_MEALS_POOL = {
+    weightloss: [
+      { title: "Salmón a la plancha con judías verdes y zanahoria (2 pers.)", tip: "Omega-3 saciante + verdura al vapor", tag: "390 kcal/pers", ingredients: [{ name: "Salmón fresco (kg)", qty: 360, unit: "g" }, { name: "Judías verdes (kg)", qty: 250, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }] },
+      { title: "Lentejas estofadas con zanahoria, puerro y pimiento (2 pers.)", tip: "Sin chorizo, pura fibra y proteína vegetal", tag: "370 kcal/pers", ingredients: [{ name: "Lenteja pardina (1 kg)", qty: 200, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Puerro fresco (bandeja)", qty: 100, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 100, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] },
+      { title: "Revuelto de champiñones con gambones (2 pers.)", tip: "Cena ligera baja en carbohidratos", tag: "265 kcal/pers", ingredients: [{ name: "Champiñones laminados (bandeja)", qty: 250, unit: "g" }, { name: "Gambón cocido (caja)", qty: 200, unit: "g" }, { name: "Huevos camperos (docena)", qty: 3, unit: "uds" }] },
+      { title: "Atún a la plancha vuelta y vuelta con tomate aliñado (2 pers.)", tip: "180g atún por persona + tomate", tag: "330 kcal/pers", ingredients: [{ name: "Atún / bonito fresco (kg)", qty: 360, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 300, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 80, unit: "g" }] },
+      { title: "Pollo salteado con champiñones y calabacín (2 pers.)", tip: "Sartén única en 12 minutos", tag: "310 kcal/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 350, unit: "g" }, { name: "Champiñones laminados (bandeja)", qty: 200, unit: "g" }, { name: "Calabacín verde (kg)", qty: 250, unit: "g" }] },
+      { title: "Judías verdes salteadas con huevo escalfado (2 pers.)", tip: "2 huevos + judías verdes", tag: "255 kcal/pers", ingredients: [{ name: "Judías verdes (kg)", qty: 350, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }, { name: "Huevos camperos (docena)", qty: 4, unit: "uds" }] }
+    ],
+    protein: [
+      { title: "Salmón a la plancha con judías verdes y zanahoria (2 pers.)", tip: "200g salmón por persona", tag: "48g Prot/pers", ingredients: [{ name: "Salmón fresco (kg)", qty: 400, unit: "g" }, { name: "Judías verdes (kg)", qty: 250, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }] },
+      { title: "Atún a la plancha vuelta y vuelta con tomate aliñado (2 pers.)", tip: "225g atún por persona", tag: "55g Prot/pers", ingredients: [{ name: "Atún / bonito fresco (kg)", qty: 450, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }] },
+      { title: "Pollo salteado con champiñones y calabacín (2 pers.)", tip: "225g pollo por persona", tag: "50g Prot/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 450, unit: "g" }, { name: "Champiñones laminados (bandeja)", qty: 200, unit: "g" }, { name: "Calabacín verde (kg)", qty: 200, unit: "g" }] },
+      { title: "Revuelto de champiñones con gambones (2 pers.)", tip: "4 huevos + 250g gambones", tag: "41g Prot/pers", ingredients: [{ name: "Champiñones laminados (bandeja)", qty: 250, unit: "g" }, { name: "Gambón cocido (caja)", qty: 250, unit: "g" }, { name: "Huevos camperos (docena)", qty: 4, unit: "uds" }] }
+    ],
+    balanced: [
+      { title: "Lentejas estofadas con zanahoria, puerro y pimiento (2 pers.)", tip: "Cuchara tradicional reconfortante", tag: "Cuchara", ingredients: [{ name: "Lenteja pardina (1 kg)", qty: 220, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Puerro fresco (bandeja)", qty: 100, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 100, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 150, unit: "g" }] },
+      { title: "Salmón a la plancha con judías verdes y zanahoria (2 pers.)", tip: "Pescado azul semanal", tag: "Equilibrado", ingredients: [{ name: "Salmón fresco (kg)", qty: 380, unit: "g" }, { name: "Judías verdes (kg)", qty: 250, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }] },
+      { title: "Pollo salteado con champiñones y calabacín (2 pers.)", tip: "Rápido y sabroso", tag: "Diario", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 400, unit: "g" }, { name: "Champiñones laminados (bandeja)", qty: 200, unit: "g" }, { name: "Calabacín verde (kg)", qty: 250, unit: "g" }] }
+    ],
+    quick: [
+      { title: "Atún a la plancha vuelta y vuelta con tomate aliñado (2 pers.)", tip: "Listo en 6 minutos", tag: "6 min", ingredients: [{ name: "Atún / bonito fresco (kg)", qty: 360, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 300, unit: "g" }] },
+      { title: "Pollo salteado con champiñones y calabacín (2 pers.)", tip: "Una sola sartén", tag: "10 min", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 380, unit: "g" }, { name: "Champiñones laminados (bandeja)", qty: 200, unit: "g" }, { name: "Calabacín verde (kg)", qty: 250, unit: "g" }] },
+      { title: "Revuelto de champiñones con gambones (2 pers.)", tip: "Cena express", tag: "8 min", ingredients: [{ name: "Champiñones laminados (bandeja)", qty: 250, unit: "g" }, { name: "Gambón cocido (caja)", qty: 200, unit: "g" }, { name: "Huevos camperos (docena)", qty: 3, unit: "uds" }] }
+    ]
+  };
+
+  const DEFAULT_WEEKLY_MENUS = {
+    weightloss: [
+      { day: "Lunes", lunch: { id: "wl1", title: "Pechuga de pollo plancha + brócoli vapor (2 pers.)", tip: "175g pollo/persona · Con brócoli al vapor", tag: "340 kcal/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 350, unit: "g" }, { name: "Brócoli fresco (kg)", qty: 350, unit: "g" }] }, dinner: { id: "wl2", title: "Crema de calabacín con huevo duro (2 pers.)", tip: "Calabacín, puerro y 1 huevo duro por persona", tag: "240 kcal/pers", ingredients: [{ name: "Calabacín verde (kg)", qty: 400, unit: "g" }, { name: "Puerro fresco (bandeja)", qty: 100, unit: "g" }, { name: "Huevos camperos (docena)", qty: 2, unit: "uds" }] } },
+      { day: "Martes", lunch: { id: "wl3", title: "Merluza al horno con tomate asado (2 pers.)", tip: "200g lomo merluza + tomate asado", tag: "320 kcal/pers", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 300, unit: "g" }] }, dinner: { id: "wl4", title: "Salteado de gambones con calabacín (2 pers.)", tip: "Proteína limpia baja en calorías", tag: "270 kcal/pers", ingredients: [{ name: "Gambón cocido (caja)", qty: 250, unit: "g" }, { name: "Calabacín verde (kg)", qty: 300, unit: "g" }] } },
+      { day: "Miércoles", lunch: { id: "wl5", title: "Potaje ligero de garbanzos con zanahoria, puerro y espinacas (2 pers.)", tip: "100g garbanzo seco/pers. + zanahoria, puerro, cebolla y espinacas", tag: "410 kcal/pers", ingredients: [{ name: "Garbanzo pedrosillano (1 kg)", qty: 200, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Puerro fresco (bandeja)", qty: 100, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }, { name: "Espinacas frescas (bolsa 300g)", qty: 150, unit: "g" }] }, dinner: { id: "wl6", title: "Tortilla francesa de 2 huevos + ensalada (2 pers.)", tip: "4 huevos + tomate, lechuga y cebolla", tag: "260 kcal/pers", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }, { name: "Lechuga / brotes tiernos", qty: 100, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 60, unit: "g" }] } },
+      { day: "Jueves", lunch: { id: "wl7", title: "Conejo guisado al ajillo con pimientos (2 pers.)", tip: "250g conejo/persona con pimiento, cebolla y ajo", tag: "380 kcal/pers", ingredients: [{ name: "Conejo troceado (kg)", qty: 500, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 200, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] }, dinner: { id: "wl8", title: "Ensalada completa con pollo (2 pers.)", tip: "Pollo plancha + lechuga, tomate y cebolla", tag: "290 kcal/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 250, unit: "g" }, { name: "Lechuga / brotes tiernos", qty: 150, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 80, unit: "g" }] } },
+      { day: "Viernes", lunch: { id: "wl9", title: "Merluza a la plancha con brócoli (2 pers.)", tip: "200g merluza + brócoli vapor", tag: "310 kcal/pers", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Brócoli fresco (kg)", qty: 350, unit: "g" }] }, dinner: { id: "wl10", title: "Revuelto de gambones y calabacín (2 pers.)", tip: "Sin pan, alto poder saciante", tag: "280 kcal/pers", ingredients: [{ name: "Gambón cocido (caja)", qty: 250, unit: "g" }, { name: "Calabacín verde (kg)", qty: 250, unit: "g" }, { name: "Huevos camperos (docena)", qty: 3, unit: "uds" }] } },
+      { day: "Sábado", lunch: { id: "wl11", title: "Pechuga de pollo especiada al horno con zanahoria (2 pers.)", tip: "200g pollo/persona + zanahoria y cebolla asada", tag: "360 kcal/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 400, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 200, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] }, dinner: { id: "wl12", title: "Yogur natural + tortilla ligera (2 pers.)", tip: "1 yogur y 2 huevos por persona", tag: "250 kcal/pers", ingredients: [{ name: "Yogur natural sin azúcar (pack)", qty: 2, unit: "uds" }, { name: "Huevos camperos (docena)", qty: 4, unit: "uds" }] } },
+      { day: "Domingo", lunch: { id: "wl13", title: "Conejo al horno con verduras asadas (2 pers.)", tip: "Conejo con pimiento, calabacín y cebolla asados", tag: "420 kcal/pers", ingredients: [{ name: "Conejo troceado (kg)", qty: 550, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 200, unit: "g" }, { name: "Calabacín verde (kg)", qty: 200, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 150, unit: "g" }] }, dinner: { id: "wl14", title: "Ensalada de tomate con huevo cocido (2 pers.)", tip: "Cierre de semana ligero", tag: "230 kcal/pers", ingredients: [{ name: "Tomate ensalada (kg)", qty: 350, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 80, unit: "g" }, { name: "Huevos camperos (docena)", qty: 2, unit: "uds" }] } }
+    ],
+    protein: [
+      { day: "Lunes", lunch: { id: "pr1", title: "Pechuga de pollo doble + brócoli (2 pers.)", tip: "250g pollo por persona", tag: "54g Prot/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 500, unit: "g" }, { name: "Brócoli fresco (kg)", qty: 350, unit: "g" }] }, dinner: { id: "pr2", title: "Tortilla de 3 huevos + gambones (2 pers.)", tip: "6 huevos + 300g gambón en total", tag: "45g Prot/pers", ingredients: [{ name: "Huevos camperos (docena)", qty: 6, unit: "uds" }, { name: "Gambón cocido (caja)", qty: 300, unit: "g" }] } },
+      { day: "Martes", lunch: { id: "pr3", title: "Carrilleras estofadas en su jugo (2 pers.)", tip: "300g carrillera + zanahoria y cebolla", tag: "52g Prot/pers", ingredients: [{ name: "Carrilleras de cerdo (kg)", qty: 600, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 150, unit: "g" }] }, dinner: { id: "pr4", title: "Merluza a la plancha con ensalada (2 pers.)", tip: "225g pescado por persona", tag: "46g Prot/pers", ingredients: [{ name: "Merluza fresca (kg)", qty: 450, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }, { name: "Lechuga / brotes tiernos", qty: 100, unit: "g" }] } },
+      { day: "Miércoles", lunch: { id: "pr5", title: "Garbanzos salteados con pollo y espinacas (2 pers.)", tip: "Proteína vegetal + animal", tag: "50g Prot/pers", ingredients: [{ name: "Garbanzo pedrosillano (1 kg)", qty: 250, unit: "g" }, { name: "Pechuga de pollo (kg)", qty: 300, unit: "g" }, { name: "Espinacas frescas (bolsa 300g)", qty: 150, unit: "g" }] }, dinner: { id: "pr6", title: "Huevos revueltos + 2 yogures (2 pers.)", tip: "4 huevos + 4 yogures naturales", tag: "38g Prot/pers", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Yogur natural sin azúcar (pack)", qty: 4, unit: "uds" }] } },
+      { day: "Jueves", lunch: { id: "pr7", title: "Conejo al ajillo ración alta con pimientos (2 pers.)", tip: "300g conejo por persona", tag: "50g Prot/pers", ingredients: [{ name: "Conejo troceado (kg)", qty: 600, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 200, unit: "g" }] }, dinner: { id: "pr8", title: "Salteado de gambones y calabacín (2 pers.)", tip: "150g gambón por persona", tag: "42g Prot/pers", ingredients: [{ name: "Gambón cocido (caja)", qty: 300, unit: "g" }, { name: "Calabacín verde (kg)", qty: 300, unit: "g" }] } },
+      { day: "Viernes", lunch: { id: "pr9", title: "Merluza al horno con tomate y cebolla (2 pers.)", tip: "225g pescado por persona", tag: "46g Prot/pers", ingredients: [{ name: "Merluza fresca (kg)", qty: 450, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] }, dinner: { id: "pr10", title: "Pechuga de pollo plancha + tomate (2 pers.)", tip: "225g pollo por persona", tag: "48g Prot/pers", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 450, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }] } },
+      { day: "Sábado", lunch: { id: "pr11", title: "Carrilleras guisadas con pimientos (2 pers.)", tip: "250g carrillera por persona", tag: "49g Prot/pers", ingredients: [{ name: "Carrilleras de cerdo (kg)", qty: 500, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 200, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] }, dinner: { id: "pr12", title: "Tortilla de 2 huevos + ensalada (2 pers.)", tip: "4 huevos en total", tag: "34g Prot/pers", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Lechuga / brotes tiernos", qty: 120, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 150, unit: "g" }] } },
+      { day: "Domingo", lunch: { id: "pr13", title: "Conejo asado con guarnición verde (2 pers.)", tip: "300g conejo por persona", tag: "50g Prot/pers", ingredients: [{ name: "Conejo troceado (kg)", qty: 600, unit: "g" }, { name: "Calabacín verde (kg)", qty: 250, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 150, unit: "g" }] }, dinner: { id: "pr14", title: "Yogures + gambones salteados (2 pers.)", tip: "2 yogures + 300g gambón", tag: "36g Prot/pers", ingredients: [{ name: "Yogur natural sin azúcar (pack)", qty: 2, unit: "uds" }, { name: "Gambón cocido (caja)", qty: 300, unit: "g" }] } }
+    ],
+    balanced: [
+      { day: "Lunes", lunch: { id: "ba1", title: "Guiso casero de conejo con zanahoria y patata (2 pers.)", tip: "275g conejo + patata, zanahoria y cebolla", tag: "Casero", ingredients: [{ name: "Conejo troceado (kg)", qty: 550, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 250, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] }, dinner: { id: "ba2", title: "Tortilla de calabacín con ensalada (2 pers.)", tip: "4 huevos + calabacín y tomate", tag: "Equilibrado", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Calabacín verde (kg)", qty: 300, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }] } },
+      { day: "Martes", lunch: { id: "ba3", title: "Cocido con garbanzo pedrosillano y verduras (2 pers.)", tip: "150g garbanzo seco + zanahoria, puerro y patata", tag: "Cuchara", ingredients: [{ name: "Garbanzo pedrosillano (1 kg)", qty: 300, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Puerro fresco (bandeja)", qty: 100, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 200, unit: "g" }] }, dinner: { id: "ba4", title: "Merluza plancha con tomate (2 pers.)", tip: "200g merluza por persona", tag: "Ligero", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }] } },
+      { day: "Miércoles", lunch: { id: "ba5", title: "Pechuga de pollo en salsa de zanahoria y cebolla (2 pers.)", tip: "200g pollo por persona", tag: "Diario", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 400, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 150, unit: "g" }] }, dinner: { id: "ba6", title: "Gambones al ajillo con ensalada (2 pers.)", tip: "150g gambón por persona", tag: "Rápido", ingredients: [{ name: "Gambón cocido (caja)", qty: 300, unit: "g" }, { name: "Lechuga / brotes tiernos", qty: 120, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }] } },
+      { day: "Jueves", lunch: { id: "ba7", title: "Carrilleras estofadas tradicionales (2 pers.)", tip: "275g carrillera + cebolla, zanahoria y patata", tag: "Guiso", ingredients: [{ name: "Carrilleras de cerdo (kg)", qty: 550, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 150, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 150, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 200, unit: "g" }] }, dinner: { id: "ba8", title: "Huevos revueltos con calabacín (2 pers.)", tip: "2 huevos por persona", tag: "Clásico", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Calabacín verde (kg)", qty: 300, unit: "g" }] } },
+      { day: "Viernes", lunch: { id: "ba9", title: "Merluza al horno con patata y cebolla (2 pers.)", tip: "200g merluza por persona", tag: "Horno", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 250, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 100, unit: "g" }] }, dinner: { id: "ba10", title: "Ensalada variada y yogur natural (2 pers.)", tip: "Cena fresca", tag: "Fresco", ingredients: [{ name: "Lechuga / brotes tiernos", qty: 150, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }, { name: "Yogur natural sin azúcar (pack)", qty: 2, unit: "uds" }] } },
+      { day: "Sábado", lunch: { id: "ba11", title: "Pollo asado con patatas y ensalada tomate (2 pers.)", tip: "225g pollo por persona", tag: "Sábado", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 450, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 300, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }] }, dinner: { id: "ba12", title: "Salteado de gambones y pimientos (2 pers.)", tip: "150g gambón por persona", tag: "Sábado", ingredients: [{ name: "Gambón cocido (caja)", qty: 300, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 250, unit: "g" }] } },
+      { day: "Domingo", lunch: { id: "ba13", title: "Conejo al ajillo de domingo con pimientos (2 pers.)", tip: "300g conejo por persona", tag: "Domingo", ingredients: [{ name: "Conejo troceado (kg)", qty: 600, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 250, unit: "g" }, { name: "Patatas para guisar (kg)", qty: 250, unit: "g" }] }, dinner: { id: "ba14", title: "Yogur natural y tortilla francesa (2 pers.)", tip: "2 yogures + 4 huevos", tag: "Suave", ingredients: [{ name: "Yogur natural sin azúcar (pack)", qty: 2, unit: "uds" }, { name: "Huevos camperos (docena)", qty: 4, unit: "uds" }] } }
+    ],
+    quick: [
+      { day: "Lunes", lunch: { id: "qu1", title: "Filetes de pollo plancha + ensalada (2 pers.)", tip: "200g pollo por persona", tag: "10 min", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 400, unit: "g" }, { name: "Lechuga / brotes tiernos", qty: 120, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }] }, dinner: { id: "qu2", title: "Gambones cocidos + tomate aliñado (2 pers.)", tip: "150g gambón por persona", tag: "5 min", ingredients: [{ name: "Gambón cocido (caja)", qty: 300, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 300, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 60, unit: "g" }] } },
+      { day: "Martes", lunch: { id: "qu3", title: "Merluza plancha + brócoli vapor (2 pers.)", tip: "200g merluza por persona", tag: "12 min", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Brócoli fresco (kg)", qty: 350, unit: "g" }] }, dinner: { id: "qu4", title: "Tortilla francesa con calabacín (2 pers.)", tip: "2 huevos por persona", tag: "8 min", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Calabacín verde (kg)", qty: 250, unit: "g" }] } },
+      { day: "Miércoles", lunch: { id: "qu5", title: "Ensalada templada garbanzos, tomate y gambón (2 pers.)", tip: "125g garbanzo por persona", tag: "10 min", ingredients: [{ name: "Garbanzo pedrosillano (1 kg)", qty: 250, unit: "g" }, { name: "Gambón cocido (caja)", qty: 200, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }, { name: "Cebolla dulce / blanca (kg)", qty: 60, unit: "g" }] }, dinner: { id: "qu6", title: "Tiras de pollo con pimientos (2 pers.)", tip: "175g pollo por persona", tag: "12 min", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 350, unit: "g" }, { name: "Pimiento rojo y verde (kg)", qty: 250, unit: "g" }] } },
+      { day: "Jueves", lunch: { id: "qu7", title: "Merluza al papillote con zanahoria y puerro (2 pers.)", tip: "200g merluza + juliana fina de verdura", tag: "10 min", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Zanahorias (bolsa 1kg)", qty: 120, unit: "g" }, { name: "Puerro fresco (bandeja)", qty: 100, unit: "g" }] }, dinner: { id: "qu8", title: "Ensalada completa y yogur natural (2 pers.)", tip: "Sin cocinar", tag: "5 min", ingredients: [{ name: "Lechuga / brotes tiernos", qty: 150, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }, { name: "Yogur natural sin azúcar (pack)", qty: 2, unit: "uds" }] } },
+      { day: "Viernes", lunch: { id: "qu9", title: "Pollo plancha con calabacín (2 pers.)", tip: "200g pollo por persona", tag: "12 min", ingredients: [{ name: "Pechuga de pollo (kg)", qty: 400, unit: "g" }, { name: "Calabacín verde (kg)", qty: 300, unit: "g" }] }, dinner: { id: "qu10", title: "Revuelto rápido de huevos con espinacas (2 pers.)", tip: "4 huevos + espinacas frescas", tag: "7 min", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Espinacas frescas (bolsa 300g)", qty: 150, unit: "g" }] } },
+      { day: "Sábado", lunch: { id: "qu11", title: "Gambones a la plancha + ensalada (2 pers.)", tip: "175g gambón por persona", tag: "10 min", ingredients: [{ name: "Gambón cocido (caja)", qty: 350, unit: "g" }, { name: "Lechuga / brotes tiernos", qty: 120, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }] }, dinner: { id: "qu12", title: "Yogur natural + tortilla francesa (2 pers.)", tip: "1 yogur y 2 huevos por persona", tag: "5 min", ingredients: [{ name: "Yogur natural sin azúcar (pack)", qty: 2, unit: "uds" }, { name: "Huevos camperos (docena)", qty: 4, unit: "uds" }] } },
+      { day: "Domingo", lunch: { id: "qu13", title: "Merluza plancha con tomate (2 pers.)", tip: "200g merluza por persona", tag: "12 min", ingredients: [{ name: "Merluza fresca (kg)", qty: 400, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 250, unit: "g" }] }, dinner: { id: "qu14", title: "Tortilla y ensalada verde (2 pers.)", tip: "Cierre rápido", tag: "8 min", ingredients: [{ name: "Huevos camperos (docena)", qty: 4, unit: "uds" }, { name: "Lechuga / brotes tiernos", qty: 150, unit: "g" }, { name: "Tomate ensalada (kg)", qty: 200, unit: "g" }] } }
+    ]
+  };
+
+  function buildNextWeekInitial(goal) {
+    const base = JSON.parse(JSON.stringify(DEFAULT_WEEKLY_MENUS[goal] || DEFAULT_WEEKLY_MENUS.weightloss));
+    const alts = ALTERNATIVE_MEALS_POOL[goal] || ALTERNATIVE_MEALS_POOL.weightloss;
+    // Rotate days & swap 3 slots so Próxima semana is distinct from Esta semana
+    const rotated = [...base.slice(2), ...base.slice(0, 2)];
+    rotated.forEach((d, idx) => {
+      d.day = base[idx].day;
+      d.lunch.id = "nx_" + goal + "_" + idx + "_l";
+      d.dinner.id = "nx_" + goal + "_" + idx + "_d";
+      if (idx % 2 === 1 && alts[idx % alts.length]) {
+        const pick = JSON.parse(JSON.stringify(alts[idx % alts.length]));
+        d.dinner = {
+          id: "nx_" + goal + "_" + idx + "_d",
+          title: pick.title,
+          tip: pick.tip,
+          tag: pick.tag,
+          ingredients: pick.ingredients
+        };
+      }
+    });
+    return rotated;
+  }
+
+  function buildAllDefaultNextMenus() {
+    return {
+      weightloss: buildNextWeekInitial("weightloss"),
+      protein: buildNextWeekInitial("protein"),
+      balanced: buildNextWeekInitial("balanced"),
+      quick: buildNextWeekInitial("quick")
+    };
+  }
+
+  const storedSchema = parseInt(localStorage.getItem("dv_schema_ver") || "1", 10);
+  if (storedSchema < MENU_SCHEMA_VERSION) {
+    localStorage.setItem("dv_cloud_menus", JSON.stringify(DEFAULT_WEEKLY_MENUS));
+    localStorage.setItem("dv_cloud_next_menus", JSON.stringify(buildAllDefaultNextMenus()));
+    localStorage.setItem("dv_cloud_prices", JSON.stringify(INITIAL_PRICE_DB));
+    localStorage.setItem("dv_schema_ver", String(MENU_SCHEMA_VERSION));
+  }
+
+  let state = {
+    schemaVersion: MENU_SCHEMA_VERSION,
+    stores: JSON.parse(localStorage.getItem("dv_cloud_stores")) || INITIAL_STORES,
+    inventory: JSON.parse(localStorage.getItem("dv_cloud_inv")) || INITIAL_INVENTORY,
+    habituals: JSON.parse(localStorage.getItem("dv_cloud_hab")) || INITIAL_HABITUALS,
+    priceDb: JSON.parse(localStorage.getItem("dv_cloud_prices")) || INITIAL_PRICE_DB,
+    customMenus: JSON.parse(localStorage.getItem("dv_cloud_menus")) || JSON.parse(JSON.stringify(DEFAULT_WEEKLY_MENUS)),
+    nextMenus: JSON.parse(localStorage.getItem("dv_cloud_next_menus")) || buildAllDefaultNextMenus(),
+    goal: localStorage.getItem("dv_cloud_goal") || "weightloss",
+    activeWeekView: localStorage.getItem("dv_active_week_view") || "current",
+    cooked: JSON.parse(localStorage.getItem("dv_cloud_cooked")) || {},
+    checkedBasket: JSON.parse(localStorage.getItem("dv_cloud_checked")) || {},
+    lastRecalcNote: localStorage.getItem("dv_last_recalc_note") || "",
+    pendingTicket: null
+  };
+
+  let editingContext = null;
+
+  function setSyncBadge(statusText, isOffline = false) {
+    const b = document.getElementById("sync-status-badge");
+    if (!b) return;
+    b.textContent = statusText;
+    b.classList.toggle("offline", isOffline);
+  }
+
+  function getSerializablePayload() {
+    return {
+      schemaVersion: MENU_SCHEMA_VERSION,
+      stores: state.stores,
+      inventory: state.inventory,
+      habituals: state.habituals,
+      priceDb: state.priceDb,
+      customMenus: state.customMenus,
+      nextMenus: state.nextMenus,
+      goal: state.goal,
+      cooked: state.cooked,
+      checkedBasket: state.checkedBasket,
+      lastRecalcNote: state.lastRecalcNote,
+      updatedAt: Date.now()
+    };
+  }
+
+  function persistLocalOnly() {
+    localStorage.setItem("dv_schema_ver", String(MENU_SCHEMA_VERSION));
+    localStorage.setItem("dv_cloud_stores", JSON.stringify(state.stores));
+    localStorage.setItem("dv_cloud_inv", JSON.stringify(state.inventory));
+    localStorage.setItem("dv_cloud_hab", JSON.stringify(state.habituals));
+    localStorage.setItem("dv_cloud_prices", JSON.stringify(state.priceDb));
+    localStorage.setItem("dv_cloud_menus", JSON.stringify(state.customMenus));
+    localStorage.setItem("dv_cloud_next_menus", JSON.stringify(state.nextMenus));
+    localStorage.setItem("dv_cloud_goal", state.goal);
+    localStorage.setItem("dv_active_week_view", state.activeWeekView);
+    localStorage.setItem("dv_cloud_cooked", JSON.stringify(state.cooked));
+    localStorage.setItem("dv_cloud_checked", JSON.stringify(state.checkedBasket));
+    localStorage.setItem("dv_last_recalc_note", state.lastRecalcNote || "");
+  }
+
+  async function saveState() {
+    persistLocalOnly();
+    const payload = getSerializablePayload();
+    const fingerprint = JSON.stringify({
+      stores: payload.stores,
+      inventory: payload.inventory,
+      habituals: payload.habituals,
+      priceDb: payload.priceDb,
+      customMenus: payload.customMenus,
+      nextMenus: payload.nextMenus,
+      goal: payload.goal,
+      cooked: payload.cooked,
+      checkedBasket: payload.checkedBasket,
+      lastRecalcNote: payload.lastRecalcNote
+    });
+    lastCloudFingerprint = fingerprint;
+
+    setSyncBadge("🔄 Guardando...");
+    try {
+      const res = await fetch(FIREBASE_DB_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      setSyncBadge("🟢 En vivo");
+    } catch (err) {
+      setSyncBadge("🟠 Local (sin red)", true);
+    }
+  }
+
+  async function pullFromCloud(silent = true) {
+    if (isSyncing || editingContext) return;
+    isSyncing = true;
+    try {
+      const res = await fetch(FIREBASE_DB_URL + "?t=" + Date.now());
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const remote = await res.json();
+
+      if (!remote || !remote.stores || (remote.schemaVersion || 1) < MENU_SCHEMA_VERSION) {
+        await saveState();
+        isSyncing = false;
+        return;
+      }
+
+      const remoteFingerprint = JSON.stringify({
+        stores: remote.stores || INITIAL_STORES,
+        inventory: remote.inventory || [],
+        habituals: remote.habituals || [],
+        priceDb: remote.priceDb || INITIAL_PRICE_DB,
+        customMenus: remote.customMenus || DEFAULT_WEEKLY_MENUS,
+        nextMenus: remote.nextMenus || buildAllDefaultNextMenus(),
+        goal: remote.goal || "weightloss",
+        cooked: remote.cooked || {},
+        checkedBasket: remote.checkedBasket || {},
+        lastRecalcNote: remote.lastRecalcNote || ""
+      });
+
+      if (remoteFingerprint !== lastCloudFingerprint) {
+        state.stores = remote.stores || INITIAL_STORES;
+        state.inventory = remote.inventory || [];
+        state.habituals = remote.habituals || [];
+        state.priceDb = remote.priceDb || INITIAL_PRICE_DB;
+        state.customMenus = remote.customMenus || JSON.parse(JSON.stringify(DEFAULT_WEEKLY_MENUS));
+        state.nextMenus = remote.nextMenus || buildAllDefaultNextMenus();
+        state.goal = remote.goal || "weightloss";
+        state.cooked = remote.cooked || {};
+        state.checkedBasket = remote.checkedBasket || {};
+        state.lastRecalcNote = remote.lastRecalcNote || "";
+        lastCloudFingerprint = remoteFingerprint;
+        persistLocalOnly();
+        refreshAllUI();
+        if (!silent) showToast("☁️ Cambios recibidos del otro móvil");
+      }
+      setSyncBadge("🟢 En vivo");
+    } catch (err) {
+      setSyncBadge("🟠 Sin conexión", true);
+    } finally {
+      isSyncing = false;
+    }
+  }
+
+  function forceManualSync() {
+    showToast("🔄 Comprobando cambios en la nube...");
+    pullFromCloud(false);
+  }
+
+  function setActiveWeekView(weekKey) {
+    state.activeWeekView = weekKey === "next" ? "next" : "current";
+    persistLocalOnly();
+    renderPlanAndShopping();
+  }
+
+  function getMenuArrayForWeek(weekKey) {
+    if (weekKey === "next") {
+      if (!state.nextMenus[state.goal]) {
+        state.nextMenus[state.goal] = buildNextWeekInitial(state.goal);
+      }
+      return state.nextMenus[state.goal];
+    }
+    if (!state.customMenus[state.goal]) {
+      state.customMenus[state.goal] = JSON.parse(JSON.stringify(DEFAULT_WEEKLY_MENUS[state.goal]));
+    }
+    return state.customMenus[state.goal];
+  }
+
+  function promoteNextWeekToCurrent() {
+    const nextArr = JSON.parse(JSON.stringify(getMenuArrayForWeek("next")));
+    // Clear cooked flags of old current week
+    const oldCurrent = getMenuArrayForWeek("current");
+    oldCurrent.forEach(d => {
+      delete state.cooked[d.lunch.id];
+      delete state.cooked[d.dinner.id];
+    });
+    state.customMenus[state.goal] = nextArr;
+    state.nextMenus[state.goal] = buildNextWeekInitial(state.goal);
+    state.activeWeekView = "current";
+    state.lastRecalcNote = "";
+    saveState();
+    renderPlanAndShopping();
+    showToast("⏭️ ¡Semana iniciada! Próxima semana pasó a Esta semana y ya tienes nuevo plan previsto.");
+  }
+
+  function regenerateViewedWeek() {
+    const wk = state.activeWeekView;
+    if (wk === "next") {
+      state.nextMenus[state.goal] = buildNextWeekInitial(state.goal);
+      state.lastRecalcNote = "";
+      showToast("🔄 Nueva propuesta generada para Próxima Semana");
+    } else {
+      const old = getMenuArrayForWeek("current");
+      old.forEach(d => {
+        delete state.cooked[d.lunch.id];
+        delete state.cooked[d.dinner.id];
+      });
+      state.customMenus[state.goal] = JSON.parse(JSON.stringify(DEFAULT_WEEKLY_MENUS[state.goal]));
+      showToast("🔄 Menú de Esta Semana renovado");
+    }
+    saveState();
+    renderPlanAndShopping();
+  }
+
+  function refreshAllUI() {
+    const labels = {
+      weightloss: "Bajar de peso",
+      protein: "Rico en Proteínas",
+      balanced: "Casero Equilibrado",
+      quick: "Rápido (< 20 min)"
+    };
+    document.getElementById("header-goal-badge").textContent = labels[state.goal] || "Bajar de peso";
+    document.querySelectorAll(".diet-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.goal === state.goal);
+    });
+    syncStoreDropdowns();
+    renderPlanAndShopping();
+    renderHabituals();
+    renderInventory();
+    renderGeneralStoreRanking();
+    renderPriceDatabase();
+  }
+
+  let toastTimer = null;
+  function showToast(msg, durationMs = 3500) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    t.onclick = () => { t.style.display = "none"; };
+    if (toastTimer) clearTimeout(toastTimer);
+    const finalDuration = msg.length > 70 ? Math.max(durationMs, 9000) : durationMs;
+    toastTimer = setTimeout(() => { t.style.display = "none"; }, finalDuration);
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("open");
+    if (id === "edit-meal-modal") editingContext = null;
+  }
+
+  function syncStoreDropdowns() {
+    const optionsHtml = state.stores.map(s => `<option value="${s.name}">${s.icon} ${s.name} (${s.type})</option>`).join("");
+    const sel1 = document.getElementById("ticket-super-select");
+    const sel2 = document.getElementById("hist-store");
+    if (sel1) sel1.innerHTML = optionsHtml;
+    if (sel2) sel2.innerHTML = optionsHtml;
+
+    const pillsDiv = document.getElementById("registered-stores-pills");
+    if (pillsDiv) {
+      pillsDiv.innerHTML = state.stores.map(s => `<span class="pill pill-gray">${s.icon} ${s.name}</span>`).join("");
+    }
+  }
+
+  function refreshKnownProductsDatalist() {
+    const dl = document.getElementById("known-products-datalist");
+    if (!dl) return;
+    const names = new Set();
+    state.priceDb.forEach(p => names.add(p.product));
+    state.inventory.forEach(i => names.add(i.name));
+    dl.innerHTML = Array.from(names).map(n => `<option value="${n}">`).join("");
+  }
+
+  function addNewStore() {
+    const name = document.getElementById("new-store-name").value.trim();
+    const type = document.getElementById("new-store-type").value;
+    if (!name) {
+      showToast("⚠️ Escribe el nombre del comercio");
+      return;
+    }
+    if (state.stores.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+      showToast("⚠️ Ese comercio ya está dado de alta");
+      return;
+    }
+    const icons = { "Supermercado": "🛒", "Carnicería": "🥩", "Pescadería": "🐟", "Frutería": "🥬" };
+    state.stores.push({ name, type, icon: icons[type] || "🏪", ticketsCount: 0, totalSpent: 0 });
+    document.getElementById("new-store-name").value = "";
+    saveState();
+    syncStoreDropdowns();
+    renderGeneralStoreRanking();
+    renderPlanAndShopping();
+    showToast(`✅ ${name} (${type}) añadido`);
+  }
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+    document.getElementById("tab-" + tabId).classList.add("active");
+    btn.classList.add("active");
+    if (tabId === "precios") {
+      renderGeneralStoreRanking();
+      renderPriceDatabase();
+    }
+    if (tabId === "inventario") {
+      renderHabituals();
+      renderInventory();
+    }
+  }
+
+  function setGoal(goal, btn) {
+    state.goal = goal;
+    document.querySelectorAll(".diet-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const labels = {
+      weightloss: "Bajar de peso",
+      protein: "Rico en Proteínas",
+      balanced: "Casero Equilibrado",
+      quick: "Rápido (< 20 min)"
+    };
+    document.getElementById("header-goal-badge").textContent = labels[goal];
+    saveState();
+    renderPlanAndShopping();
+  }
+
+  function toggleShopItemCheck(productName, qty, unit) {
+    const cleanName = productName.split(" (")[0];
+    if (!state.checkedBasket[productName]) {
+      state.checkedBasket[productName] = { qty, unit };
+      showToast(`🛒 ${cleanName} marcado en el carro`);
+    } else {
+      delete state.checkedBasket[productName];
+      showToast(`↩️ ${cleanName} vuelve a pendientes`);
+    }
+    saveState();
+    renderPlanAndShopping();
+  }
+
+  function clearCheckedList() {
+    state.checkedBasket = {};
+    saveState();
+    renderPlanAndShopping();
+    showToast("🧹 Carro vaciado para la próxima compra");
+  }
+
+  // BOTÓN 1-CLIC: ALTERNATIVA RÁPIDA SIN TENER QUE ESCRIBIR RECETA
+  async function suggestAlternativeMeal(weekKey, dayIdx, slot, btnEl) {
+    const days = getMenuArrayForWeek(weekKey);
+    const dayObj = days[dayIdx];
+    const currentMeal = dayObj[slot];
+
+    const usedTitles = new Set();
+    days.forEach(d => {
+      usedTitles.add(d.lunch.title.toLowerCase());
+      usedTitles.add(d.dinner.title.toLowerCase());
+    });
+
+    const originalLabel = btnEl ? btnEl.textContent : "";
+    if (btnEl) {
+      btnEl.disabled = true;
+      btnEl.textContent = "⏳ Buscando...";
+    }
+
+    const apiKey = localStorage.getItem("dv_cloud_api_key");
+    const goalLabels = {
+      weightloss: "bajar de peso, ligero y saciante",
+      protein: "alto en proteínas",
+      balanced: "casero equilibrado tradicional español",
+      quick: "rápido de preparar en menos de 15-20 minutos"
+    };
+
+    if (apiKey) {
+      try {
+        const knownCatalog = state.priceDb.map(p => p.product).join(", ");
+        const pantrySummary = state.inventory.map(i => `${i.name} (${i.qty}${i.unit})`).join(", ") || "ninguno";
+        const avoidList = Array.from(usedTitles).join(" | ");
+        const slotName = slot === "lunch" ? "Comida" : "Cena";
+
+        const prompt = `Propón 1 plato alternativo para ${slotName} de 2 adultos en España con enfoque ${goalLabels[state.goal] || "saludable"}.
+No repitas ninguno de estos platos: [${avoidList}].
+Prioriza aprovechar ingredientes que ya tenemos en casa si encajan: [${pantrySummary}].
+Devuelve ÚNICAMENTE un JSON válido:
+{
+  "title": "Nombre del plato (2 pers.)",
+  "tag": "kcal/pers o tiempo",
+  "tip": "nota breve",
+  "ingredients": [{"name": "ingrediente", "qty": 200, "unit": "g"}],
+  "steps": ["Paso 1...", "Paso 2...", "Paso 3..."]
+}
+Usa unidades "g", "uds" o "L", desglosa verduras por separado y usa nombres del catálogo [${knownCatalog}] cuando coincidan.`;
+
+        const data = await callGeminiAPI(apiKey, [{ parts: [{ text: prompt }] }], true);
+        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+        const cleanJson = rawText.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+        const parsed = JSON.parse(cleanJson);
+
+        if (parsed && parsed.title && Array.isArray(parsed.ingredients) && parsed.ingredients.length > 0) {
+          delete state.cooked[currentMeal.id];
+          dayObj[slot] = {
+            id: currentMeal.id,
+            title: String(parsed.title),
+            tag: String(parsed.tag || "Alternativa IA"),
+            tip: String(parsed.tip || "Propuesta alternativa para 2 personas"),
+            ingredients: parsed.ingredients.map(i => ({
+              name: String(i.name),
+              qty: Number(i.qty) || 100,
+              unit: ["g", "uds", "L"].includes(i.unit) ? i.unit : "g"
+            })),
+            customSteps: Array.isArray(parsed.steps) ? parsed.steps : [],
+            isEdited: true
+          };
+          saveState();
+          renderPlanAndShopping();
+          showToast(`🎲 Cambiado por: ${parsed.title} (${data._usedModel || "Gemini"})`);
+          return;
+        }
+      } catch (e) {
+        // Fallback silencioso al banco local inteligente para que el botón siempre funcione a la primera
+      } finally {
+        if (btnEl) {
+          btnEl.disabled = false;
+          btnEl.textContent = originalLabel;
+        }
+      }
+    }
+
+    // Banco local inteligente (prioriza platos que aprovechan stock de En Casa y no se repiten en la semana)
+    const pool = [
+      ...(ALTERNATIVE_MEALS_POOL[state.goal] || []),
+      ...ALTERNATIVE_MEALS_POOL.weightloss,
+      ...ALTERNATIVE_MEALS_POOL.balanced
+    ];
+    const uniquePool = [];
+    const seen = new Set();
+    pool.forEach(item => {
+      if (!seen.has(item.title)) {
+        seen.add(item.title);
+        uniquePool.push(item);
+      }
+    });
+
+    const candidates = uniquePool.filter(c => !usedTitles.has(c.title.toLowerCase()));
+    const listToPick = candidates.length > 0 ? candidates : uniquePool.filter(c => c.title !== currentMeal.title);
+
+    // Score candidates by pantry overlap + slight randomness
+    const scored = listToPick.map(c => {
+      let pantryHits = 0;
+      (c.ingredients || []).forEach(ing => {
+        const kw = ing.name.split(" (")[0].toLowerCase().split(" ")[0];
+        if (state.inventory.some(inv => inv.name.toLowerCase().includes(kw) && inv.qty > 0)) {
+          pantryHits += 2;
+        }
+      });
+      return { item: c, score: pantryHits + Math.random() * 1.5 };
+    }).sort((a, b) => b.score - a.score);
+
+    const chosen = JSON.parse(JSON.stringify(scored[0].item));
+    delete state.cooked[currentMeal.id];
+    dayObj[slot] = {
+      id: currentMeal.id,
+      title: chosen.title,
+      tag: chosen.tag,
+      tip: chosen.tip,
+      ingredients: chosen.ingredients,
+      isEdited: true
+    };
+
+    if (btnEl) {
+      btnEl.disabled = false;
+      btnEl.textContent = originalLabel;
+    }
+    saveState();
+    renderPlanAndShopping();
+    showToast(`🎲 Alternativa lista: ${chosen.title}`);
+  }
+
+  function openRecipeModal(weekKey, dayIdx, slot) {
+    const dayObj = getMenuArrayForWeek(weekKey)[dayIdx];
+    const meal = dayObj[slot];
+
+    document.getElementById("rec-modal-tag").textContent = `${weekKey === 'next' ? 'Próxima sem.' : 'Esta sem.'} · ${dayObj.day} · ${slot === 'lunch' ? 'Comida' : 'Cena'}`;
+    document.getElementById("rec-modal-title").textContent = meal.title;
+    document.getElementById("rec-modal-tip").textContent = meal.tip || "Preparación para 2 personas";
+
+    const ingsHtml = (meal.ingredients || []).map(ing => `
+      <span class="pill pill-green">${ing.name.split(" (")[0]}: <strong>${ing.qty} ${ing.unit}</strong></span>
+    `).join("");
+    document.getElementById("rec-modal-ings").innerHTML = ingsHtml || `<span class="pill pill-gray">Sin ingredientes asignados</span>`;
+
+    let steps = meal.customSteps && meal.customSteps.length > 0
+      ? meal.customSteps
+      : RECIPE_BOOK[meal.title];
+
+    if (!steps) {
+      const mainIngs = (meal.ingredients || []).map(i => `${i.qty} ${i.unit} de ${i.name.split(" (")[0].toLowerCase()}`).join(", ");
+      steps = [
+        `Prepara y limpia los ingredientes exactos para 2 personas: ${mainIngs || meal.title.toLowerCase()}.`,
+        `Cocina a fuego medio con un chorrito de aceite de oliva virgen extra, sal y tus especias habituales hasta alcanzar el punto deseado.`,
+        `Emplata recién hecho y sirve.`
+      ];
+    }
+
+    document.getElementById("rec-modal-steps").innerHTML = steps.map(s => `<li>${s}</li>`).join("");
+
+    const cleanQuery = encodeURIComponent("receta " + meal.title.replace("(2 pers.)", "").trim());
+    document.getElementById("rec-modal-google-link").href = `https://www.google.com/search?q=${cleanQuery}`;
+
+    document.getElementById("rec-modal-alt-btn").onclick = async () => {
+      closeModal("recipe-modal");
+      await suggestAlternativeMeal(weekKey, dayIdx, slot, null);
+    };
+
+    document.getElementById("rec-modal-edit-btn").onclick = () => {
+      closeModal("recipe-modal");
+      openEditMealModal(weekKey, dayIdx, slot);
+    };
+
+    document.getElementById("recipe-modal").classList.add("open");
+  }
+
+  function openEditMealModal(weekKey, dayIdx, slot) {
+    const dayObj = getMenuArrayForWeek(weekKey)[dayIdx];
+    const meal = dayObj[slot];
+
+    editingContext = {
+      weekKey,
+      dayIdx,
+      slot,
+      tempIngredients: JSON.parse(JSON.stringify(meal.ingredients || []))
+    };
+
+    document.getElementById("edit-modal-day-label").textContent = `${weekKey === 'next' ? 'Próxima semana' : 'Esta semana'} · ${dayObj.day} · ${slot === 'lunch' ? 'Comida' : 'Cena'}`;
+    document.getElementById("edit-meal-title").value = meal.title;
+    document.getElementById("edit-meal-tag").value = meal.tag || "";
+    document.getElementById("edit-meal-tip").value = meal.tip || "";
+    document.getElementById("edit-meal-steps").value = (meal.customSteps || RECIPE_BOOK[meal.title] || []).join("\n");
+
+    const errBox = document.getElementById("ai-recipe-error-box");
+    if (errBox) { errBox.style.display = "none"; errBox.innerHTML = ""; }
+    refreshKnownProductsDatalist();
+    renderEditorIngredients();
+    document.getElementById("edit-meal-modal").classList.add("open");
+  }
+
+  function explainGeminiError(rawMsg) {
+    const low = String(rawMsg || "").toLowerCase();
+    if (low.includes("quota") || low.includes("429") || low.includes("resource_exhausted") || low.includes("rate limit")) {
+      return "Cuota gratuita agotada o en 0 para este modelo/clave en Google. Si es una clave nueva de Vertex/Cloud (AQ...), requiere activar la prueba gratuita o facturación en Google Cloud; si es de AI Studio (AIza...), espera 1 minuto o crea una clave nueva en aistudio.google.com/apikey.";
+    }
+    if (low.includes("api key not valid") || low.includes("api_key_invalid") || low.includes("permission_denied") || low.includes("403") || low.includes("401")) {
+      return "La clave API no es válida o no tiene permiso para Gemini. Revisa que esté copiada entera sin espacios.";
+    }
+    if (low.includes("not found") || low.includes("404") || low.includes("not supported")) {
+      return "Google no encuentra esa versión del modelo para tu clave.";
+    }
+    if (low.includes("failed to fetch") || low.includes("networkerror")) {
+      return "Fallo de conexión con los servidores de Google (revisa Wi-Fi/datos o bloqueadores).";
+    }
+    return rawMsg;
+  }
+
+  function getActiveGeminiModels() {
+    const pref = localStorage.getItem("dv_gemini_model_pref") || "auto";
+    const customId = (localStorage.getItem("dv_gemini_custom_model") || "").trim();
+    const defaultChain = [
+      "gemini-3-flash-preview",
+      "gemini-3-flash",
+      "gemini-2.5-flash",
+      "gemini-2.5-flash-lite",
+      "gemini-2.0-flash"
+    ];
+    if (pref === "custom" && customId) {
+      return [customId, ...defaultChain.filter(m => m !== customId)];
+    }
+    if (pref !== "auto" && pref !== "custom") {
+      return [pref, ...defaultChain.filter(m => m !== pref)];
+    }
+    return defaultChain;
+  }
+
+  async function callGeminiAPI(apiKey, contents, useJson = true) {
+    const cleanKey = String(apiKey || "").trim().replace(/^["']|["']$/g, "");
+    const payload = { contents };
+    if (useJson) {
+      payload.generationConfig = { responseMimeType: "application/json" };
+    }
+
+    const models = getActiveGeminiModels();
+    const baseUrls = cleanKey.startsWith("AQ.")
+      ? [
+          (m) => `https://aiplatform.googleapis.com/v1/publishers/google/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`,
+          (m) => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`
+        ]
+      : [
+          (m) => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`,
+          (m) => `https://aiplatform.googleapis.com/v1/publishers/google/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`
+        ];
+
+    let lastErrorMsg = "Error desconocido";
+    for (const buildUrl of baseUrls) {
+      for (const model of models) {
+        try {
+          const res = await fetch(buildUrl(model), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok) {
+            data._usedModel = model;
+            return data;
+          }
+          lastErrorMsg = data?.error?.message || `HTTP ${res.status}`;
+          if (res.status === 400 && lastErrorMsg.toLowerCase().includes("api key not valid")) {
+            break;
+          }
+        } catch (netErr) {
+          lastErrorMsg = netErr.message;
+        }
+      }
+    }
+    const friendly = explainGeminiError(lastErrorMsg);
+    const err = new Error(friendly);
+    err.rawDetails = lastErrorMsg;
+    throw err;
+  }
+
+  async function generateRecipeWithGemini() {
+    if (!editingContext) return;
+    const title = document.getElementById("edit-meal-title").value.trim();
+    if (!title) {
+      showToast("⚠️ Escribe primero el nombre del plato arriba");
+      return;
+    }
+
+    const apiKey = localStorage.getItem("dv_cloud_api_key");
+    if (!apiKey) {
+      showToast("🔑 Pega tu clave gratuita de Google AI Studio en la pestaña 'Subir Tiquet' para usar Gemini IA");
+      return;
+    }
+
+    const errBox = document.getElementById("ai-recipe-error-box");
+    if (errBox) { errBox.style.display = "none"; errBox.innerHTML = ""; }
+    const btn = document.getElementById("btn-ai-autofill");
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "⏳ Gemini calculando ingredientes y receta...";
+
+    const knownCatalog = state.priceDb.map(p => p.product).join(", ");
+    const prompt = `Eres el chef y nutricionista de Héctor y Estefa (2 adultos).
+Para el plato: "${title}", devuelve ÚNICAMENTE un objeto JSON válido (sin markdown ni texto extra) con:
+{
+  "tag": "tiempo estimado o kcal/pers",
+  "tip": "nota breve para 2 raciones",
+  "ingredients": [
+    {"name": "nombre del ingrediente", "qty": 200, "unit": "g"}
+  ],
+  "steps": ["Paso 1...", "Paso 2...", "Paso 3..."]
+}
+Reglas estrictas:
+1. Desglosa TODOS los ingredientes principales y las verduras/hortalizas de acompañamiento (nunca pongas "verduras variadas", pon zanahoria, cebolla, pimiento, calabacín, etc. por separado).
+2. Usa "g", "uds" o "L" como unidad y cantidades realistas para 2 personas.
+3. Si el ingrediente coincide con alguno de este catálogo, usa exactamente ese nombre: [${knownCatalog}].`;
+
+    try {
+      const data = await callGeminiAPI(apiKey, [{ parts: [{ text: prompt }] }], true);
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+      const cleanJson = rawText.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+      const parsed = JSON.parse(cleanJson);
+
+      if (parsed.tag) document.getElementById("edit-meal-tag").value = parsed.tag;
+      if (parsed.tip) document.getElementById("edit-meal-tip").value = parsed.tip;
+      if (Array.isArray(parsed.ingredients) && parsed.ingredients.length > 0) {
+        editingContext.tempIngredients = parsed.ingredients.map(i => ({
+          name: String(i.name),
+          qty: Number(i.qty) || 100,
+          unit: ["g", "uds", "L"].includes(i.unit) ? i.unit : "g"
+        }));
+        renderEditorIngredients();
+      }
+      if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
+        document.getElementById("edit-meal-steps").value = parsed.steps.join("\n");
+      }
+
+      showToast(`✨ ¡Ingredientes y receta generados (${data._usedModel || "Gemini"})!`);
+    } catch (e) {
+      const errBox = document.getElementById("ai-recipe-error-box");
+      if (errBox) {
+        errBox.style.display = "block";
+        errBox.innerHTML = `<strong>⚠️ No se pudo generar con Gemini:</strong><br/>${e.message}` +
+          (e.rawDetails && e.rawDetails !== e.message
+            ? `<details style="margin-top:6px; font-size:0.71rem; opacity:0.85;"><summary style="cursor:pointer;">Ver mensaje técnico original</summary><div style="margin-top:4px;">${e.rawDetails}</div></details>`
+            : "");
+      }
+      showToast("⚠️ Error con Gemini (lee el recuadro rojo)", 6000);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  }
+
+  function renderEditorIngredients() {
+    const list = document.getElementById("edit-ings-list");
+    if (!editingContext || editingContext.tempIngredients.length === 0) {
+      list.innerHTML = `<p style="font-size:0.78rem; color:var(--muted); margin-bottom:6px;">No hay ingredientes añadidos todavía.</p>`;
+      return;
+    }
+
+    list.innerHTML = editingContext.tempIngredients.map((ing, idx) => {
+      const step = ing.unit === "g" ? 50 : (ing.unit === "L" ? 0.5 : 1);
+      return `
+        <div class="ing-chip-row">
+          <div style="flex:1; font-weight:600;">${ing.name}</div>
+          <div style="display:flex; align-items:center; gap:5px;">
+            <button type="button" class="qty-btn" style="width:24px; height:24px;" onclick="adjustEditorIng(${idx}, -${step})">−</button>
+            <span style="min-width:52px; text-align:center; font-weight:700;">${ing.qty} ${ing.unit}</span>
+            <button type="button" class="qty-btn" style="width:24px; height:24px;" onclick="adjustEditorIng(${idx}, ${step})">+</button>
+            <button type="button" class="qty-btn" style="width:24px; height:24px; color:var(--red);" onclick="removeEditorIng(${idx})">✕</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function adjustEditorIng(idx, delta) {
+    if (!editingContext) return;
+    const item = editingContext.tempIngredients[idx];
+    item.qty = Math.max(0.5, Math.round((item.qty + delta) * 10) / 10);
+    renderEditorIngredients();
+  }
+
+  function removeEditorIng(idx) {
+    if (!editingContext) return;
+    editingContext.tempIngredients.splice(idx, 1);
+    renderEditorIngredients();
+  }
+
+  function addIngredientToEditor() {
+    if (!editingContext) return;
+    const name = document.getElementById("new-meal-ing-name").value.trim();
+    const qty = parseFloat(document.getElementById("new-meal-ing-qty").value);
+    const unit = document.getElementById("new-meal-ing-unit").value;
+
+    if (!name || !qty || qty <= 0) {
+      showToast("⚠️ Escribe el ingrediente y la cantidad");
+      return;
+    }
+
+    const existing = editingContext.tempIngredients.find(i => i.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      existing.qty = Math.round((existing.qty + qty) * 10) / 10;
+    } else {
+      editingContext.tempIngredients.push({ name, qty, unit });
+    }
+
+    document.getElementById("new-meal-ing-name").value = "";
+    document.getElementById("new-meal-ing-qty").value = "";
+    renderEditorIngredients();
+  }
+
+  function saveEditedMeal(markAsCookedNow) {
+    if (!editingContext) return;
+    const { weekKey, dayIdx, slot, tempIngredients } = editingContext;
+    const meal = getMenuArrayForWeek(weekKey)[dayIdx][slot];
+
+    const newTitle = document.getElementById("edit-meal-title").value.trim() || meal.title;
+    const newTag = document.getElementById("edit-meal-tag").value.trim() || "Personalizado";
+    const newTip = document.getElementById("edit-meal-tip").value.trim();
+    const rawSteps = document.getElementById("edit-meal-steps").value.trim();
+
+    meal.title = newTitle;
+    meal.tag = newTag;
+    meal.tip = newTip;
+    meal.ingredients = tempIngredients;
+    meal.isEdited = true;
+    meal.customSteps = rawSteps
+      ? rawSteps.split("\n").map(s => s.replace(/^\d+[\.\)]\s*/, "").trim()).filter(Boolean)
+      : [];
+
+    closeModal("edit-meal-modal");
+
+    if (markAsCookedNow && !state.cooked[meal.id]) {
+      toggleCooked(weekKey, dayIdx, slot);
+    } else {
+      saveState();
+      renderPlanAndShopping();
+      showToast("✅ Plato y lista de la compra actualizados");
+    }
+  }
+
+  function toggleCooked(weekKey, dayIdx, slot) {
+    const meal = getMenuArrayForWeek(weekKey)[dayIdx][slot];
+
+    if (state.cooked[meal.id]) {
+      const usedList = state.cooked[meal.id];
+      if (Array.isArray(usedList)) {
+        usedList.forEach(u => {
+          const existing = state.inventory.find(i => i.name.toLowerCase() === u.name.toLowerCase());
+          if (existing) {
+            existing.qty = Math.round((existing.qty + u.qty) * 10) / 10;
+          } else {
+            state.inventory.push({ id: Date.now() + Math.random(), name: u.name, qty: u.qty, unit: u.unit, store: "Devuelto plato" });
+          }
+        });
+      }
+      delete state.cooked[meal.id];
+      saveState();
+      renderInventory();
+      renderHabituals();
+      renderPlanAndShopping();
+      showToast("↩️ Plato desmarcado e ingredientes devueltos a En Casa");
+      return;
+    }
+
+    const discountedLog = [];
+    (meal.ingredients || []).forEach(ing => {
+      const cleanIngName = ing.name.split(" (")[0];
+      const keyWord = cleanIngName.toLowerCase().split(" ")[0];
+      const item = state.inventory.find(i =>
+        i.name.toLowerCase() === cleanIngName.toLowerCase() ||
+        i.name.toLowerCase().includes(keyWord)
+      );
+      if (item && item.qty > 0) {
+        const deducted = Math.min(item.qty, ing.qty);
+        item.qty = Math.max(0, Math.round((item.qty - ing.qty) * 10) / 10);
+        discountedLog.push({ name: item.name, qty: deducted, unit: item.unit });
+        if (item.qty === 0) {
+          state.inventory = state.inventory.filter(i => i.id !== item.id);
+        }
+      }
+    });
+
+    state.cooked[meal.id] = discountedLog.length > 0 ? discountedLog : true;
+    saveState();
+    renderInventory();
+    renderHabituals();
+    renderPlanAndShopping();
+
+    if (discountedLog.length > 0) {
+      const summary = discountedLog.map(d => `${d.qty}${d.unit} ${d.name}`).join(", ");
+      showToast(`🍳 Cocinado · Descontado de En Casa: ${summary}`);
+    } else {
+      showToast(`✅ Plato marcado como cocinado`);
+    }
+  }
+
+  // Palabras clave de lo que hace falta comprar para Próxima Semana (para auditar el ticket del sábado)
+  function getNextWeekNeededProductSet() {
+    const days = getMenuArrayForWeek("next");
+    const set = new Set();
+    days.forEach(d => {
+      [d.lunch, d.dinner].forEach(m => {
+        (m.ingredients || []).forEach(ing => {
+          set.add(ing.name.split(" (")[0].toLowerCase().split(" ")[0]);
+        });
+      });
+    });
+    state.habituals.forEach(h => {
+      set.add(h.name.toLowerCase().split(" ")[0]);
+    });
+    return set;
+  }
+
+  function renderPlanAndShopping() {
+    const isNextView = state.activeWeekView === "next";
+    document.getElementById("btn-week-current").classList.toggle("active", !isNextView);
+    document.getElementById("btn-week-next").classList.toggle("active", isNextView);
+
+    const banner = document.getElementById("week-context-banner");
+    if (isNextView) {
+      banner.innerHTML = `<strong>🗓️ Próxima semana (Compra del sábado):</strong> Este es vuestro menú previsto para la semana que viene. La <strong>Lista de la compra de abajo</strong> se genera exactamente con estos platos. Si alguno no os convence, pulsa <strong>🎲 Alternativa</strong>.`;
+    } else {
+      banner.innerHTML = `<strong>🍳 Esta semana (En curso):</strong> Ve marcando <strong>Cocinado</strong> conforme hagáis las comidas para descontarlas de <em>En Casa</em>. Si un día cambiáis de plan, pulsa <strong>🎲 Alternativa</strong>.`;
+    }
+
+    const recalcBanner = document.getElementById("recalc-summary-banner");
+    if (state.lastRecalcNote) {
+      recalcBanner.style.display = "block";
+      recalcBanner.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+          <div>${state.lastRecalcNote}</div>
+          <button type="button" class="btn btn-sm btn-outline" style="padding:2px 7px;" onclick="dismissRecalcNote()">✕</button>
+        </div>
+      `;
+    } else {
+      recalcBanner.style.display = "none";
+    }
+
+    // 1. Calcular lo que aún queda pendiente de cocinar en ESTA SEMANA (para reservarlo del stock)
+    const reservedForCurrentWeek = {};
+    const currentDays = getMenuArrayForWeek("current");
+    currentDays.forEach(d => {
+      [d.lunch, d.dinner].forEach(m => {
+        if (state.cooked[m.id]) return;
+        (m.ingredients || []).forEach(ing => {
+          const kw = ing.name.split(" (")[0].toLowerCase().split(" ")[0];
+          reservedForCurrentWeek[kw] = (reservedForCurrentWeek[kw] || 0) + ing.qty;
+        });
+      });
+    });
+
+    // 2. Calcular la Lista de la Compra a partir de PRÓXIMA SEMANA (+ consumos fijos)
+    const nextDays = getMenuArrayForWeek("next");
+    const deductPantry = document.getElementById("deduct-pantry-toggle").checked;
+    const includeHabituals = document.getElementById("include-habituals-toggle").checked;
+
+    const neededMap = {};
+    nextDays.forEach(d => {
+      [d.lunch, d.dinner].forEach(m => {
+        (m.ingredients || []).forEach(ing => {
+          if (!neededMap[ing.name]) {
+            neededMap[ing.name] = { product: ing.name, totalQty: 0, unit: ing.unit, source: "Próxima semana" };
+          }
+          neededMap[ing.name].totalQty = Math.round((neededMap[ing.name].totalQty + ing.qty) * 10) / 10;
+        });
+      });
+    });
+
+    if (includeHabituals) {
+      state.habituals.forEach(h => {
+        const keyName = h.dbKey || `${h.name} (${h.weeklyUse}${h.unit})`;
+        if (!neededMap[keyName]) {
+          neededMap[keyName] = {
+            product: keyName,
+            matchWord: h.name.toLowerCase().split(" ")[0],
+            totalQty: h.weeklyUse,
+            unit: h.unit,
+            source: "Consumo fijo"
+          };
+        } else {
+          neededMap[keyName].totalQty += h.weeklyUse;
+        }
+      });
+    }
+
+    const pendingItems = [];
+    const checkedItems = [];
+
+    Object.values(neededMap).forEach(req => {
+      let toBuyQty = req.totalQty;
+      let inHouseNote = "";
+      if (deductPantry) {
+        const cleanReq = req.product.split(" (")[0].toLowerCase();
+        const keyWord = req.matchWord || cleanReq.split(" ")[0];
+        const inStock = state.inventory.find(i =>
+          i.name.toLowerCase() === cleanReq || i.name.toLowerCase().includes(keyWord)
+        );
+        if (inStock && inStock.qty > 0) {
+          const reserved = reservedForCurrentWeek[keyWord] || 0;
+          const freeQty = Math.max(0, Math.round((inStock.qty - reserved) * 10) / 10);
+          if (freeQty > 0) {
+            toBuyQty = Math.max(0, Math.round((req.totalQty - freeQty) * 10) / 10);
+            inHouseNote = reserved > 0
+              ? `${freeQty}${inStock.unit} libres (${reserved}${inStock.unit} para esta sem.)`
+              : `Quedan ${freeQty}${inStock.unit} en casa`;
+          } else if (reserved > 0) {
+            inHouseNote = `Stock reservado para esta semana`;
+          }
+        }
+      }
+
+      const checkedEntry = state.checkedBasket[req.product];
+      if (checkedEntry) {
+        checkedItems.push({
+          product: req.product,
+          qty: toBuyQty > 0 ? toBuyQty : checkedEntry.qty,
+          unit: req.unit,
+          inHouseNote,
+          source: req.source,
+          isChecked: true
+        });
+      } else if (toBuyQty > 0) {
+        pendingItems.push({
+          product: req.product,
+          qty: toBuyQty,
+          unit: req.unit,
+          inHouseNote,
+          source: req.source,
+          isChecked: false
+        });
+      }
+    });
+
+    const allDisplayItems = [...pendingItems, ...checkedItems];
+
+    const generalSupers = state.stores.filter(s => s.type === "Supermercado").map(s => s.name);
+    const storeTotals = {};
+    generalSupers.forEach(st => storeTotals[st] = 0);
+
+    allDisplayItems.forEach(item => {
+      const dbEntry = state.priceDb.find(p => p.product.toLowerCase() === item.product.toLowerCase());
+      let factor = 1;
+      if (item.unit === "g") factor = Math.max(1, Math.round((item.qty / 1000) * 10) / 10);
+      else if (item.unit === "L") factor = Math.max(1, Math.ceil(item.qty));
+      else factor = Math.max(1, Math.ceil(item.qty / 6));
+
+      generalSupers.forEach(st => {
+        const knownPrices = dbEntry ? Object.values(dbEntry.prices) : [2.00];
+        const avgFallback = knownPrices.reduce((a, b) => a + b, 0) / knownPrices.length;
+        const unitPrice = (dbEntry && dbEntry.prices[st] !== undefined) ? dbEntry.prices[st] : avgFallback;
+        storeTotals[st] += unitPrice * factor;
+      });
+    });
+
+    const rankedStores = Object.entries(storeTotals).sort((a, b) => a[1] - b[1]);
+    if (rankedStores.length > 0) {
+      const winnerStore = rankedStores[0][0];
+      const winnerTotal = rankedStores[0][1];
+      const runnerUp = rankedStores[1] || [winnerStore, winnerTotal];
+      const saving = runnerUp[1] - winnerTotal;
+
+      document.getElementById("best-super-name").textContent = `${winnerStore} (Cesta sábado: ${winnerTotal.toFixed(2)} €)`;
+      document.getElementById("best-super-total").textContent = saving > 0 ? `Ahorras ${saving.toFixed(2)} € vs ${runnerUp[0]}` : "Mejor precio";
+      document.getElementById("best-super-desc").textContent =
+        `Calculada con el menú de Próxima Semana + consumos fijos (${allDisplayItems.length} productos):`;
+
+      document.getElementById("super-totals-compare").innerHTML = rankedStores.map(([st, tot], idx) => `
+        <span class="pill ${idx === 0 ? 'pill-green' : 'pill-gray'}">
+          ${idx === 0 ? '🥇' : (idx === 1 ? '🥈' : '🥉')} ${st}: ${tot.toFixed(2)} €
+        </span>
+      `).join("");
+    }
+
+    document.getElementById("shop-items-count").textContent = `${pendingItems.length} pendientes`;
+    const clearBtn = document.getElementById("clear-checked-btn");
+    if (clearBtn) clearBtn.style.display = checkedItems.length > 0 ? "inline-flex" : "none";
+
+    const shopContainer = document.getElementById("shopping-list-container");
+    if (allDisplayItems.length === 0) {
+      shopContainer.innerHTML = `<p style="font-size:0.84rem; color:var(--green); font-weight:600;">🎉 ¡Ya tenéis todo cubierto en casa para la próxima semana!</p>`;
+    } else {
+      shopContainer.innerHTML = allDisplayItems.map(it => {
+        const dbEntry = state.priceDb.find(p => p.product.toLowerCase() === it.product.toLowerCase());
+        let bestText = "";
+        if (dbEntry) {
+          const bestPair = Object.entries(dbEntry.prices).sort((a, b) => a[1] - b[1])[0];
+          if (bestPair) bestText = `Más barato en ${bestPair[0]} (${Number(bestPair[1]).toFixed(2)}€)`;
+        }
+        const badgeSource = it.isChecked
+          ? `<span class="pill pill-green">🛒 En el carro</span>`
+          : (it.source === "Consumo fijo"
+              ? `<span class="pill pill-amber">🔄 Alerta consumo fijo</span>`
+              : `<span class="pill pill-purple">🗓️ Próx. sem.</span>`);
+
+        const safeName = it.product.replace(/'/g, "\\'");
+        return `
+          <div class="shop-item ${it.isChecked ? 'checked-row' : ''}">
+            <label class="shop-left">
+              <input type="checkbox" ${it.isChecked ? "checked" : ""} onchange="toggleShopItemCheck('${safeName}', ${it.qty}, '${it.unit}')" />
+              <div>
+                <div class="shop-name">${it.product} ${badgeSource}</div>
+                <div class="shop-sub">
+                  ${it.isChecked ? 'En el carro:' : 'Coger:'} <strong>${it.qty} ${it.unit}</strong>
+                  ${it.inHouseNote ? ` · <span style="color:var(--primary)">${it.inHouseNote}</span>` : ""}
+                  ${bestText && !it.isChecked ? `<br/><span style="color:#15803d; font-weight:600;">🏷️ ${bestText}</span>` : ""}
+                </div>
+              </div>
+            </label>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // 3. Renderizar el menú de la semana seleccionada (Esta semana o Próxima semana)
+    const activeDays = getMenuArrayForWeek(state.activeWeekView);
+    document.getElementById("menu-section-heading").textContent = isNextView
+      ? "🗓️ Menú Previsto · Próxima Semana"
+      : "🍽️ Menú de Esta Semana (Lunes a Domingo)";
+    const badgeEl = document.getElementById("menu-week-badge");
+    badgeEl.textContent = isNextView ? "Previsto · Compra sábado" : "En curso";
+    badgeEl.className = isNextView ? "pill pill-purple" : "pill pill-green";
+
+    const menuContainer = document.getElementById("menu-list");
+    menuContainer.innerHTML = activeDays.map((d, dayIdx) => `
+      <div class="day-header">
+        <span>${d.day}</span>
+      </div>
+      <div class="card">
+        ${renderMealRow(state.activeWeekView, "Comida", d.lunch, dayIdx, "lunch")}
+        ${renderMealRow(state.activeWeekView, "Cena", d.dinner, dayIdx, "dinner")}
+      </div>
+    `).join("");
+  }
+
+  function dismissRecalcNote() {
+    state.lastRecalcNote = "";
+    saveState();
+    renderPlanAndShopping();
+  }
+
+  function renderMealRow(weekKey, label, meal, dayIdx, slot) {
+    const isDone = !!state.cooked[meal.id];
+    const ingPills = (meal.ingredients || []).map(ing =>
+      `<span class="pill pill-gray">${ing.name.split(" (")[0]}: <strong>${ing.qty}${ing.unit}</strong></span>`
+    ).join("");
+
+    const actionRightBtn = weekKey === "current"
+      ? `<button class="btn btn-sm btn-cooked ${isDone ? 'done' : ''}" onclick="toggleCooked('${weekKey}', ${dayIdx}, '${slot}')">
+           ${isDone ? "✅ Cocinado" : "🍳 Cocinado"}
+         </button>`
+      : `<span class="pill pill-purple" style="font-size:0.68rem;">🛒 En lista sábado</span>`;
+
+    return `
+      <div class="meal-row">
+        <div class="meal-type">
+          <span>${label}</span>
+          <span style="color:var(--primary)">· ${meal.tag || "2 pers."}</span>
+          ${meal.isEdited ? `<span class="pill pill-amber">✏️ Ajustado</span>` : ""}
+        </div>
+        <div class="meal-title">${meal.title}</div>
+        ${meal.tip ? `<div class="meal-tip">${meal.tip}</div>` : ""}
+        <div class="meal-ings-pills">${ingPills}</div>
+        <div class="meal-actions">
+          <div class="meal-btn-group">
+            <button class="btn btn-sm btn-recipe" onclick="openRecipeModal('${weekKey}', ${dayIdx}, '${slot}')">
+              📖 Receta
+            </button>
+            <button class="btn btn-sm btn-alt" onclick="suggestAlternativeMeal('${weekKey}', ${dayIdx}, '${slot}', this)">
+              🎲 Alternativa
+            </button>
+            <button class="btn btn-sm btn-edit" onclick="openEditMealModal('${weekKey}', ${dayIdx}, '${slot}')">
+              ✏️ Editar
+            </button>
+          </div>
+          ${actionRightBtn}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderHabituals() {
+    const container = document.getElementById("habituals-list");
+    if (state.habituals.length === 0) {
+      container.innerHTML = `<p style="font-size:0.82rem; color:var(--muted);">No hay consumos fijos configurados.</p>`;
+      return;
+    }
+    container.innerHTML = state.habituals.map(h => {
+      const keyWord = h.name.toLowerCase().split(" ")[0];
+      const inStock = state.inventory.find(i => i.name.toLowerCase().includes(keyWord));
+      const currentQty = inStock ? inStock.qty : 0;
+      const needsAlert = currentQty < h.weeklyUse;
+      const step = h.unit === "g" ? 50 : 1;
+
+      return `
+        <div class="inv-item">
+          <div class="inv-info">
+            <h4>${h.name}</h4>
+            <div class="inv-meta">
+              <span class="pill pill-blue">Gasto medio: ${h.weeklyUse} ${h.unit}/sem</span>
+              ${needsAlert
+                ? `<span class="pill pill-amber">⚠️ Quedan ${currentQty}${h.unit} → Salta en lista</span>`
+                : `<span class="pill pill-green">✅ Cubierto (${currentQty}${h.unit} en casa)</span>`}
+            </div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="updateHabitual(${h.id}, -${step})">−</button>
+            <span class="qty-val">${h.weeklyUse} ${h.unit}</span>
+            <button class="qty-btn" onclick="updateHabitual(${h.id}, ${step})">+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function updateHabitual(id, delta) {
+    const idx = state.habituals.findIndex(h => h.id === id);
+    if (idx === -1) return;
+    state.habituals[idx].weeklyUse = Math.max(0, Math.round((state.habituals[idx].weeklyUse + delta) * 10) / 10);
+    if (state.habituals[idx].weeklyUse === 0) state.habituals.splice(idx, 1);
+    saveState();
+    renderHabituals();
+    renderPlanAndShopping();
+  }
+
+  function addHabitualItem() {
+    const name = document.getElementById("hab-name").value.trim();
+    const weeklyUse = parseFloat(document.getElementById("hab-weekly").value);
+    const unit = document.getElementById("hab-unit").value;
+    if (!name || !weeklyUse) {
+      showToast("⚠️ Indica el producto y cuánto gastáis a la semana");
+      return;
+    }
+    state.habituals.push({ id: Date.now(), name, weeklyUse, unit, dbKey: `${name} (${weeklyUse}${unit})` });
+    document.getElementById("hab-name").value = "";
+    document.getElementById("hab-weekly").value = "";
+    saveState();
+    renderHabituals();
+    renderPlanAndShopping();
+    showToast(`🔄 Consumo semanal de ${name} activado`);
+  }
+
+  function simulateWeekConsumption() {
+    let discountedCount = 0;
+    state.habituals.forEach(h => {
+      const keyWord = h.name.toLowerCase().split(" ")[0];
+      const item = state.inventory.find(i => i.name.toLowerCase().includes(keyWord));
+      if (item) {
+        item.qty = Math.max(0, Math.round((item.qty - h.weeklyUse) * 10) / 10);
+        if (item.qty === 0) state.inventory = state.inventory.filter(i => i.id !== item.id);
+        discountedCount++;
+      }
+    });
+    saveState();
+    renderHabituals();
+    renderInventory();
+    renderPlanAndShopping();
+    showToast(`⏩ Semana descontada: ${discountedCount} básicos actualizados y alertas activadas`);
+  }
+
+  function addManualInventory() {
+    const name = document.getElementById("man-inv-name").value.trim();
+    const qty = parseFloat(document.getElementById("man-inv-qty").value);
+    const unit = document.getElementById("man-inv-unit").value;
+    if (!name || !qty) {
+      showToast("⚠️ Indica nombre y cantidad");
+      return;
+    }
+    const existing = state.inventory.find(x => x.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      existing.qty = Math.round((existing.qty + qty) * 10) / 10;
+    } else {
+      state.inventory.push({ id: Date.now(), name, qty, unit, store: "Manual (sin tiquet)" });
+    }
+    document.getElementById("man-inv-name").value = "";
+    document.getElementById("man-inv-qty").value = "";
+    saveState();
+    renderInventory();
+    renderHabituals();
+    renderPlanAndShopping();
+    showToast(`✅ ${name} (${qty} ${unit}) apuntado en casa`);
+  }
+
+  function renderGeneralStoreRanking() {
+    const container = document.getElementById("general-store-ranking");
+    const totalTickets = state.stores.reduce((acc, s) => acc + (s.ticketsCount || 0), 0);
+    document.getElementById("total-tickets-badge").textContent = `${totalTickets} tiquets analizados`;
+
+    const storeScores = state.stores.map(store => {
+      let bestCount = 0;
+      let comparedCount = 0;
+      let ratioSum = 0;
+
+      state.priceDb.forEach(item => {
+        const entries = Object.entries(item.prices);
+        if (entries.length === 0) return;
+        const avgPrice = entries.reduce((a, b) => a + b[1], 0) / entries.length;
+        const minPrice = Math.min(...entries.map(e => e[1]));
+
+        if (item.prices[store.name] !== undefined) {
+          comparedCount++;
+          const myPrice = item.prices[store.name];
+          if (myPrice <= minPrice + 0.001) bestCount++;
+          ratioSum += (avgPrice / myPrice) * 100;
+        }
+      });
+
+      const savingsIndex = comparedCount > 0 ? Math.round(ratioSum / comparedCount) : 100;
+      return { ...store, bestCount, comparedCount, savingsIndex };
+    });
+
+    storeScores.sort((a, b) => (b.savingsIndex - a.savingsIndex) || (b.bestCount - a.bestCount));
+
+    container.innerHTML = storeScores.map((s, idx) => {
+      const medal = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : `#${idx + 1}`));
+      const diffPct = s.savingsIndex - 100;
+      const diffText = diffPct > 0 ? `${diffPct}% más barato que la media` : (diffPct < 0 ? `${Math.abs(diffPct)}% sobre la media` : "En la media");
+      const barWidth = Math.min(100, Math.max(25, s.savingsIndex - 15));
+
+      return `
+        <div class="rank-row">
+          <div class="rank-left" style="flex:1;">
+            <div class="rank-medal">${medal}</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                <strong style="font-size:0.9rem;">${s.icon} ${s.name}</strong>
+                <span class="pill ${diffPct >= 0 ? 'pill-green' : 'pill-amber'}">${diffText}</span>
+              </div>
+              <div style="font-size:0.73rem; color:var(--muted); margin-top:2px;">
+                ${s.type} · <strong>${s.bestCount}</strong> productos líderes · ${s.ticketsCount} tiquets (${s.totalSpent.toFixed(2)} €)
+              </div>
+              <div class="rank-bar-wrap">
+                <div class="rank-bar-fill" style="width:${barWidth}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = String(reader.result || "");
+        const base64 = result.split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function displayAnalyzedTicket(chosenStore, itemsArray, fileLabel) {
+    state.pendingTicket = { store: chosenStore, items: itemsArray };
+
+    const plannedSum = itemsArray.filter(i => i.inList).reduce((a, b) => a + b.price, 0);
+    const extraSum = itemsArray.filter(i => !i.inList).reduce((a, b) => a + b.price, 0);
+    const total = plannedSum + extraSum;
+    const planPct = total > 0 ? Math.round((plannedSum / total) * 100) : 100;
+    const extraPct = 100 - planPct;
+
+    document.getElementById("ticket-analysis-card").style.display = "block";
+    document.getElementById("ticket-total-paid").textContent = `${total.toFixed(2)} €`;
+    document.getElementById("ratio-plan-pct").textContent = `${planPct}%`;
+    document.getElementById("ratio-extra-pct").textContent = `${extraPct}%`;
+    document.getElementById("plan-euros").textContent = `${plannedSum.toFixed(2)}€`;
+    document.getElementById("extra-euros").textContent = `${extraSum.toFixed(2)}€`;
+    document.getElementById("bar-plan").style.width = `${planPct}%`;
+    document.getElementById("bar-extra").style.width = `${extraPct}%`;
+
+    const extraCount = itemsArray.filter(i => !i.inList).length;
+    document.getElementById("audit-verdict").innerHTML =
+      `${fileLabel ? `📄 Archivo: <strong>${fileLabel}</strong> · ` : ""}Cumplimiento del <strong>${planPct}%</strong> de la lista en <strong>${chosenStore}</strong>. Al guardar, actualizaremos <strong>En Casa</strong> y adaptaremos el menú de <strong>Próxima Semana</strong> a lo que habéis comprado.`;
+
+    document.getElementById("ticket-items-preview").innerHTML = itemsArray.map(it => `
+      <div class="inv-item">
+        <div class="inv-info">
+          <h4>${it.product}</h4>
+          <div class="inv-meta">
+            <span>${it.qty} ${it.unit}</span>
+            ${it.inList
+              ? `<span class="pill pill-green">✅ En lista próx. sem.</span>`
+              : `<span class="pill pill-amber">🔄 Extra / Compra real</span>`}
+          </div>
+        </div>
+        <strong>${Number(it.price).toFixed(2)} €</strong>
+      </div>
+    `).join("");
+  }
+
+  async function handleTicketFileUpload(inputEl, sourceMode) {
+    const file = inputEl.files && inputEl.files[0];
+    if (!file) return;
+
+    const statusBox = document.getElementById("ticket-upload-status");
+    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const chosenStore = document.getElementById("ticket-super-select").value || (isPdf ? "Mercadona" : "Gadis");
+
+    if (isPdf && file.name.toLowerCase().includes("mercadona")) {
+      document.getElementById("ticket-super-select").value = "Mercadona";
+    }
+    const activeStore = document.getElementById("ticket-super-select").value || chosenStore;
+
+    statusBox.style.display = "block";
+    statusBox.innerHTML = `⏳ Procesando <strong>${file.name}</strong> (${isPdf ? "Tiquet digital PDF" : "Imagen"})...`;
+
+    const apiKey = localStorage.getItem("dv_cloud_api_key");
+    if (!apiKey) {
+      statusBox.innerHTML = `ℹ️ Archivo adjuntado: <strong>${file.name}</strong>. Como aún no has pegado tu clave de Gemini IA abajo, cargamos una lectura de muestra editable.`;
+      setTimeout(() => {
+        loadSampleTicket(file.name);
+        inputEl.value = "";
+      }, 600);
+      return;
+    }
+
+    try {
+      const base64Data = await fileToBase64(file);
+      const mimeType = file.type || (isPdf ? "application/pdf" : "image/jpeg");
+      const knownCatalog = state.priceDb.map(p => p.product).join(", ");
+      const neededKeywords = Array.from(getNextWeekNeededProductSet()).join(", ");
+
+      const prompt = `Eres un extractor de tiquets de supermercado de España (como Mercadona PDF digital, Gadis, Lidl, carnicería).
+Extrae TODOS los productos comprados de este tiquet y devuelve ÚNICAMENTE un JSON válido con este formato:
+{
+  "storeDetected": "Mercadona",
+  "items": [
+    {
+      "product": "Nombre claro del producto",
+      "qty": 1000,
+      "unit": "g",
+      "price": 6.95,
+      "inList": true
+    }
+  ]
+}
+Reglas:
+1. "price" es el importe total pagado por esa línea en euros (número decimal).
+2. "unit" debe ser "g" (si va al peso o gramos, ej. 0,450 kg -> qty: 450, unit: "g"), "L" (litros), o "uds" (unidades/paquetes).
+3. Si el producto coincide con alguno de nuestro catálogo [${knownCatalog}], usa ese nombre exacto para actualizar precios.
+4. Marca "inList": true si el producto encaja con lo que teníamos previsto para próxima semana [${neededKeywords}], y false si es un producto distinto/extra.`;
+
+      const data = await callGeminiAPI(apiKey, [{
+        parts: [
+          { text: prompt },
+          { inline_data: { mime_type: mimeType, data: base64Data } }
+        ]
+      }], true);
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+      const cleanJson = rawText.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+      const parsed = JSON.parse(cleanJson);
+
+      if (parsed.storeDetected) {
+        const matchedStore = state.stores.find(s => s.name.toLowerCase().includes(parsed.storeDetected.toLowerCase()));
+        if (matchedStore) {
+          document.getElementById("ticket-super-select").value = matchedStore.name;
+        }
+      }
+
+      const finalStore = document.getElementById("ticket-super-select").value || activeStore;
+      const items = (parsed.items || []).map(it => ({
+        product: String(it.product || "Producto"),
+        qty: Number(it.qty) || 1,
+        unit: ["g", "L", "uds"].includes(it.unit) ? it.unit : "uds",
+        price: Number(it.price) || 0,
+        inList: Boolean(it.inList)
+      }));
+
+      if (items.length === 0) throw new Error("Sin líneas detectadas");
+
+      statusBox.innerHTML = `✅ Tiquet digital leído con éxito: <strong>${items.length} productos</strong> extraídos de <strong>${file.name}</strong>.`;
+      displayAnalyzedTicket(finalStore, items, file.name);
+      showToast(`🧾 ${items.length} productos leídos (${data._usedModel || "Gemini"})`);
+    } catch (err) {
+      statusBox.innerHTML = `⚠️ <strong>No se pudo leer el archivo con IA:</strong> ${err.message}` +
+        (err.rawDetails && err.rawDetails !== err.message
+          ? `<details style="margin-top:4px; font-size:0.71rem;"><summary style="cursor:pointer;">Ver detalle técnico</summary>${err.rawDetails}</details>`
+          : "");
+      showToast("⚠️ Error leyendo el archivo del tiquet", 6000);
+    } finally {
+      inputEl.value = "";
+    }
+  }
+
+  function loadSampleTicket(fileLabel = "") {
+    const chosenStore = document.getElementById("ticket-super-select").value || "Mercadona";
+    const sampleTicket = [
+      { product: "Leche semidesnatada (1L)", qty: 4, unit: "L", price: 3.68, inList: true },
+      { product: "Pechuga de pollo (kg)", qty: 1000, unit: "g", price: 7.25, inList: true },
+      { product: "Salmón fresco (kg)", qty: 750, unit: "g", price: 10.65, inList: false },
+      { product: "Judías verdes (kg)", qty: 600, unit: "g", price: 1.73, inList: false },
+      { product: "Zanahorias (bolsa 1kg)", qty: 1000, unit: "g", price: 0.95, inList: true },
+      { product: "Champiñones laminados (bandeja)", qty: 500, unit: "g", price: 2.70, inList: false },
+      { product: "Huevos camperos (docena)", qty: 12, unit: "uds", price: 2.40, inList: true }
+    ];
+
+    displayAnalyzedTicket(chosenStore, sampleTicket, fileLabel);
+    showToast("🧾 Tiquet cargado · Listo para recalcular Próxima Semana");
+  }
+
+  // RECÁLCULO AUTOMÁTICO DE PRÓXIMA SEMANA TRAS SUBIR EL TICKET DEL SÁBADO
+  async function recalculateNextWeekFromPurchase(boughtItems) {
+    const nextDays = getMenuArrayForWeek("next");
+    const pantryKeywords = new Set();
+    state.inventory.forEach(inv => {
+      if (inv.qty > 0) pantryKeywords.add(inv.name.toLowerCase().split(" ")[0]);
+    });
+    const boughtKeywords = new Set();
+    boughtItems.forEach(b => {
+      boughtKeywords.add(b.product.split(" (")[0].toLowerCase().split(" ")[0]);
+    });
+
+    const apiKey = localStorage.getItem("dv_cloud_api_key");
+    if (apiKey) {
+      try {
+        const boughtSummary = boughtItems.map(b => `${b.product}: ${b.qty}${b.unit}`).join(", ");
+        const pantrySummary = state.inventory.map(i => `${i.name}: ${i.qty}${i.unit}`).join(", ");
+        const currentNextPlan = nextDays.map(d => `${d.day}: Comida="${d.lunch.title}" | Cena="${d.dinner.title}"`).join("\n");
+        const knownCatalog = state.priceDb.map(p => p.product).join(", ");
+
+        const prompt = `Acabamos de hacer la compra del sábado y hemos comprado esto: [${boughtSummary}].
+Stock total actual en casa: [${pantrySummary}].
+Este era nuestro menú previsto para Próxima Semana:
+${currentNextPlan}
+
+Recalcula y adapta el menú de Próxima Semana (Lunes a Domingo, 2 raciones) manteniendo los platos cuyos ingredientes sí tenemos, y sustituyendo o ajustando aquellos platos donde faltaba el ingrediente principal por platos que aprovechen lo que acabamos de comprar (enfoque: ${state.goal}).
+Devuelve ÚNICAMENTE un JSON válido con este formato exacto (7 días):
+{
+  "summary": "Frase corta explicando qué platos se han adaptado según la compra",
+  "days": [
+    {
+      "day": "Lunes",
+      "lunch": {"title": "...", "tag": "...", "tip": "...", "ingredients": [{"name": "...", "qty": 350, "unit": "g"}]},
+      "dinner": {"title": "...", "tag": "...", "tip": "...", "ingredients": [{"name": "...", "qty": 300, "unit": "g"}]}
+    }
+  ]
+}
+Usa nombres del catálogo [${knownCatalog}] cuando coincidan.`;
+
+        const data = await callGeminiAPI(apiKey, [{ parts: [{ text: prompt }] }], true);
+        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+        const cleanJson = rawText.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+        const parsed = JSON.parse(cleanJson);
+
+        if (Array.isArray(parsed.days) && parsed.days.length === 7) {
+          parsed.days.forEach((nd, idx) => {
+            if (nd.lunch && nd.lunch.title) {
+              nextDays[idx].lunch = {
+                id: nextDays[idx].lunch.id,
+                title: String(nd.lunch.title),
+                tag: String(nd.lunch.tag || "Adaptado compra"),
+                tip: String(nd.lunch.tip || ""),
+                ingredients: (nd.lunch.ingredients || []).map(i => ({
+                  name: String(i.name),
+                  qty: Number(i.qty) || 100,
+                  unit: ["g", "uds", "L"].includes(i.unit) ? i.unit : "g"
+                })),
+                isEdited: true
+              };
+            }
+            if (nd.dinner && nd.dinner.title) {
+              nextDays[idx].dinner = {
+                id: nextDays[idx].dinner.id,
+                title: String(nd.dinner.title),
+                tag: String(nd.dinner.tag || "Adaptado compra"),
+                tip: String(nd.dinner.tip || ""),
+                ingredients: (nd.dinner.ingredients || []).map(i => ({
+                  name: String(i.name),
+                  qty: Number(i.qty) || 100,
+                  unit: ["g", "uds", "L"].includes(i.unit) ? i.unit : "g"
+                })),
+                isEdited: true
+              };
+            }
+          });
+          return parsed.summary || "Menú de Próxima Semana recalculado con Gemini según tu ticket.";
+        }
+      } catch (e) {
+        // Fallback determinista abajo
+      }
+    }
+
+    // Recálculo inteligente local: verifica cada comida/cena de Próxima Semana contra el stock comprado
+    let swappedCount = 0;
+    const swappedNames = [];
+    const pool = [
+      ...(ALTERNATIVE_MEALS_POOL[state.goal] || []),
+      ...ALTERNATIVE_MEALS_POOL.weightloss,
+      ...ALTERNATIVE_MEALS_POOL.balanced
+    ];
+    const usedTitles = new Set();
+    nextDays.forEach(d => {
+      usedTitles.add(d.lunch.title);
+      usedTitles.add(d.dinner.title);
+    });
+
+    nextDays.forEach(d => {
+      ["lunch", "dinner"].forEach(slot => {
+        const meal = d[slot];
+        const mainIng = (meal.ingredients || [])[0];
+        if (!mainIng) return;
+        const mainKw = mainIng.name.split(" (")[0].toLowerCase().split(" ")[0];
+        // Si el ingrediente principal NO está en casa tras la compra, buscar alternativa que SÍ use lo comprado
+        if (!pantryKeywords.has(mainKw)) {
+          const matchAlt = pool.find(cand => {
+            if (usedTitles.has(cand.title)) return false;
+            const candMain = (cand.ingredients || [])[0];
+            if (!candMain) return false;
+            const cKw = candMain.name.split(" (")[0].toLowerCase().split(" ")[0];
+            return boughtKeywords.has(cKw) || pantryKeywords.has(cKw);
+          });
+          if (matchAlt) {
+            usedTitles.delete(meal.title);
+            usedTitles.add(matchAlt.title);
+            d[slot] = {
+              id: meal.id,
+              title: matchAlt.title,
+              tag: matchAlt.tag,
+              tip: "Adaptado a tu compra del sábado",
+              ingredients: JSON.parse(JSON.stringify(matchAlt.ingredients)),
+              isEdited: true
+            };
+            swappedCount++;
+            swappedNames.push(`${d.day} (${slot === "lunch" ? "Comida" : "Cena"})`);
+          }
+        }
+      });
+    });
+
+    if (swappedCount > 0) {
+      return `Se han recalculado <strong>${swappedCount} platos</strong> de Próxima Semana (${swappedNames.join(", ")}) para aprovechar exactamente lo que compraste en el ticket.`;
+    }
+    return "Todos los platos de Próxima Semana están cubiertos con tu compra y despensa actual.";
+  }
+
+  async function commitTicketToInventory() {
+    if (!state.pendingTicket) return;
+    const btn = document.getElementById("btn-commit-ticket");
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "⏳ Guardando y recalculando Próxima Semana...";
+
+    const { store, items } = state.pendingTicket;
+    const ticketTotal = items.reduce((a, b) => a + b.price, 0);
+
+    const storeObj = state.stores.find(s => s.name === store);
+    if (storeObj) {
+      storeObj.ticketsCount = (storeObj.ticketsCount || 0) + 1;
+      storeObj.totalSpent = (storeObj.totalSpent || 0) + ticketTotal;
+    }
+
+    items.forEach(it => {
+      const cleanName = it.product.split(" (")[0];
+      const existing = state.inventory.find(x => x.name.toLowerCase() === cleanName.toLowerCase());
+      if (existing) {
+        existing.qty = Math.round((existing.qty + it.qty) * 10) / 10;
+        existing.store = store;
+      } else {
+        state.inventory.push({ id: Date.now() + Math.random(), name: cleanName, qty: it.qty, unit: it.unit, store });
+      }
+
+      const dbItem = state.priceDb.find(p => p.product.toLowerCase() === it.product.toLowerCase());
+      let unitPrice = it.price;
+      if (it.unit === "L" && it.qty > 1) unitPrice = Math.round((it.price / it.qty) * 100) / 100;
+      else if (it.unit === "g" && it.qty > 0) unitPrice = Math.round(((it.price / it.qty) * 1000) * 100) / 100;
+
+      if (dbItem) {
+        dbItem.prices[store] = unitPrice;
+      } else {
+        state.priceDb.push({ product: it.product, prices: { [store]: unitPrice } });
+      }
+    });
+
+    const recalcSummary = await recalculateNextWeekFromPurchase(items);
+    state.lastRecalcNote = `🧾 <strong>Compra de ${store} (${ticketTotal.toFixed(2)} €) aplicada:</strong> ${recalcSummary}`;
+    state.checkedBasket = {};
+    state.pendingTicket = null;
+    state.activeWeekView = "next";
+
+    btn.disabled = false;
+    btn.textContent = origText;
+    document.getElementById("ticket-analysis-card").style.display = "none";
+    document.getElementById("ticket-upload-status").style.display = "none";
+
+    saveState();
+    renderPlanAndShopping();
+    renderHabituals();
+    renderInventory();
+    renderGeneralStoreRanking();
+    renderPriceDatabase();
+
+    // Llevar automáticamente a la pestaña Menú y Lista mostrando Próxima Semana recalculada
+    const planNavBtn = document.querySelector(".bottom-nav .nav-btn");
+    if (planNavBtn) switchTab("plan", planNavBtn);
+    showToast(`🎉 Compra guardada y Próxima Semana recalculada`, 5000);
+  }
+
+  function renderPriceDatabase() {
+    const query = (document.getElementById("price-search-input")?.value || "").toLowerCase().trim();
+    const filtered = state.priceDb.filter(p => p.product.toLowerCase().includes(query));
+    document.getElementById("db-count-badge").textContent = `${state.priceDb.length} productos`;
+
+    const container = document.getElementById("price-ranking-list");
+    if (filtered.length === 0) {
+      container.innerHTML = `<p style="font-size:0.82rem; color:var(--muted);">No hay productos con ese nombre.</p>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const entries = Object.entries(item.prices).sort((a, b) => a[1] - b[1]);
+      const best = entries[0];
+      const others = entries.slice(1);
+      return `
+        <div class="inv-item">
+          <div class="inv-info">
+            <h4>${item.product}</h4>
+            <div class="inv-meta">
+              <span class="pill pill-green">🥇 ${best[0]}: ${Number(best[1]).toFixed(2)} €</span>
+              ${others.map(o => `<span class="pill pill-gray">${o[0]}: ${Number(o[1]).toFixed(2)} €</span>`).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function addManualPrice() {
+    const prod = document.getElementById("hist-prod").value.trim();
+    const store = document.getElementById("hist-store").value;
+    const price = parseFloat(document.getElementById("hist-price").value);
+
+    if (!prod || !price) {
+      showToast("⚠️ Indica producto y precio");
+      return;
+    }
+
+    const existing = state.priceDb.find(p => p.product.toLowerCase() === prod.toLowerCase());
+    if (existing) {
+      existing.prices[store] = price;
+    } else {
+      state.priceDb.push({ product: prod, prices: { [store]: price } });
+    }
+
+    document.getElementById("hist-prod").value = "";
+    document.getElementById("hist-price").value = "";
+    saveState();
+    renderGeneralStoreRanking();
+    renderPriceDatabase();
+    renderPlanAndShopping();
+    showToast(`🏷️ Precio registrado en ${store}`);
+  }
+
+  function renderInventory() {
+    const list = document.getElementById("inventory-list");
+    if (state.inventory.length === 0) {
+      list.innerHTML = `<p style="color:var(--muted); font-size:0.84rem;">No tenéis productos registrados en casa ahora mismo.</p>`;
+      return;
+    }
+
+    list.innerHTML = state.inventory.map(item => {
+      const step = item.unit === "g" ? 100 : (item.unit === "L" ? 0.5 : 1);
+      return `
+        <div class="inv-item">
+          <div class="inv-info">
+            <h4>${item.name}</h4>
+            <div class="inv-meta">
+              <span class="pill pill-gray">🏪 ${item.store}</span>
+            </div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="updateQty(${item.id}, -${step})">−</button>
+            <span class="qty-val">${item.qty} ${item.unit}</span>
+            <button class="qty-btn" onclick="updateQty(${item.id}, ${step})">+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function updateQty(id, delta) {
+    const idx = state.inventory.findIndex(i => i.id === id);
+    if (idx === -1) return;
+    state.inventory[idx].qty = Math.max(0, Math.round((state.inventory[idx].qty + delta) * 10) / 10);
+    if (state.inventory[idx].qty === 0) state.inventory.splice(idx, 1);
+    saveState();
+    renderInventory();
+    renderHabituals();
+    renderPlanAndShopping();
+  }
+
+  function saveApiKey() {
+    const key = document.getElementById("api-key-input").value.trim().replace(/^["']|["']$/g, "");
+    document.getElementById("api-key-input").value = key;
+    localStorage.setItem("dv_cloud_api_key", key);
+    showToast("🔑 Clave API guardada en este móvil");
+  }
+
+  function saveGeminiModelPref() {
+    const sel = document.getElementById("gemini-model-select");
+    const customInp = document.getElementById("gemini-custom-model-input");
+    if (!sel) return;
+    const val = sel.value;
+    localStorage.setItem("dv_gemini_model_pref", val);
+    if (customInp) {
+      customInp.style.display = val === "custom" ? "block" : "none";
+      localStorage.setItem("dv_gemini_custom_model", customInp.value.trim());
+    }
+    showToast(`🤖 Modelo actualizado: ${val === "custom" ? (customInp.value.trim() || "Personalizado") : val}`);
+  }
+
+  function resetDemo() {
+    state.stores = JSON.parse(JSON.stringify(INITIAL_STORES));
+    state.inventory = JSON.parse(JSON.stringify(INITIAL_INVENTORY));
+    state.habituals = JSON.parse(JSON.stringify(INITIAL_HABITUALS));
+    state.priceDb = JSON.parse(JSON.stringify(INITIAL_PRICE_DB));
+    state.customMenus = JSON.parse(JSON.stringify(DEFAULT_WEEKLY_MENUS));
+    state.nextMenus = buildAllDefaultNextMenus();
+    state.cooked = {};
+    state.checkedBasket = {};
+    state.lastRecalcNote = "";
+    saveState();
+    refreshAllUI();
+    showToast("🔄 Datos y menús completos restaurados en ambos móviles");
+  }
+
+  const savedKey = localStorage.getItem("dv_cloud_api_key");
+  if (savedKey) document.getElementById("api-key-input").value = savedKey;
+  const savedModelPref = localStorage.getItem("dv_gemini_model_pref") || "auto";
+  const savedCustomModel = localStorage.getItem("dv_gemini_custom_model") || "";
+  const modelSel = document.getElementById("gemini-model-select");
+  const customModelInp = document.getElementById("gemini-custom-model-input");
+  if (modelSel) modelSel.value = savedModelPref;
+  if (customModelInp) {
+    customModelInp.value = savedCustomModel;
+    customModelInp.style.display = savedModelPref === "custom" ? "block" : "none";
+  }
+  refreshAllUI();
+  pullFromCloud(true);
+  setInterval(() => pullFromCloud(true), 4000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) pullFromCloud(true);
+  });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>
